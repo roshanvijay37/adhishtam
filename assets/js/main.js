@@ -14,35 +14,51 @@
   (function () {
     var pre = $('#preload');
     if (!pre) return;
-    var bar = $('#preloadBar');
-    var num = $('#preloadNum');
-    var pct = 0;
+
+    var HOLD = 5200;  // deliberate dwell — the animation is timed to fill it
+    var CAP  = 9000;  // hard ceiling, so a stalled asset can never trap anyone
+
+    var bar  = $('#preloadBar');
+    var num  = $('#preloadNum');
     var done = false;
 
     function finish() {
       if (done) return;
       done = true;
-      pct = 100;
       if (bar) bar.style.transform = 'scaleX(1)';
       if (num) num.textContent = '100';
+      document.documentElement.classList.remove('is-loading');
       setTimeout(function () {
         pre.classList.add('is-done');
         document.body.classList.add('is-ready');
-      }, reduced ? 0 : 420);
+      }, reduced ? 0 : 260);
     }
 
     if (reduced) { finish(); return; }
 
-    if (bar) bar.style.transition = 'transform .3s linear';
-    var tick = setInterval(function () {
-      pct += Math.random() * 13 + 4;
-      if (pct >= 96) { pct = 96; clearInterval(tick); }
-      if (bar) bar.style.transform = 'scaleX(' + (pct / 100) + ')';
-      if (num) num.textContent = Math.floor(pct);
-    }, 110);
+    // Hold the scroll position at the top while the panel is up, otherwise a
+    // stray scroll during the dwell lands the visitor mid-page on reveal.
+    document.documentElement.classList.add('is-loading');
 
-    window.addEventListener('load', function () { clearInterval(tick); finish(); });
-    setTimeout(function () { clearInterval(tick); finish(); }, 4200); // never trap the user
+    var loaded = document.readyState === 'complete';
+    window.addEventListener('load', function () { loaded = true; });
+
+    var t0 = (window.performance && performance.now) ? performance.now() : Date.now();
+
+    requestAnimationFrame(function frame(now) {
+      var elapsed = now - t0;
+      var p = Math.min(1, elapsed / HOLD);
+
+      // Sit at 99 rather than 100 if the page itself is still loading, so the
+      // number never claims to be finished while it isn't.
+      var shown = loaded ? p : Math.min(p, 0.99);
+
+      if (bar) bar.style.transform = 'scaleX(' + shown.toFixed(4) + ')';
+      if (num) num.textContent = Math.round(shown * 100);
+
+      if ((p >= 1 && loaded) || elapsed >= CAP) { finish(); return; }
+      requestAnimationFrame(frame);
+    });
   })();
 
   /* -------------------------------------------------------------- cursor */

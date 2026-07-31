@@ -19,9 +19,10 @@
 <meta property="og:image" content="https://adhishtam.com/assets/img/logo-full.png">
 <meta name="twitter:card" content="summary_large_image">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<!-- Fonts are self-hosted: no third-party connection to negotiate on a phone,
+     and no render-blocking stylesheet on someone else's server. -->
+<link rel="preload" href="assets/fonts/sora-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/css/style.css">
 <script>document.documentElement.classList.add('js');</script>
 
@@ -51,14 +52,21 @@
 </head>
 <body>
 
-<!-- preloader -->
-<div class="preload" id="preload">
-  <svg class="preload__mark" viewBox="0 0 100 100" fill="none" aria-hidden="true">
-    <path class="ring" d="M37.32 73.19 A30 30 0 1 1 62.68 73.19" stroke="#c9a961" stroke-width="7"/>
-    <path class="peak" d="M50 10 L76 88 L64.5 88 L50 44.5 L35.5 88 L24 88 Z" stroke="#3c8a68" stroke-width="4"/>
-  </svg>
-  <div class="preload__bar"><i id="preloadBar"></i></div>
-  <div class="preload__num"><span id="preloadNum">0</span>%</div>
+<!-- preloader — choreographed to fill its dwell time, see main.js -->
+<div class="preload" id="preload" role="status" aria-live="polite" aria-label="Loading">
+  <div class="preload__inner">
+    <svg class="preload__mark" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+      <path class="pl-ring" d="M37.32 73.19 A30 30 0 1 1 62.68 73.19" stroke="#c9a961" stroke-width="7"/>
+      <path class="pl-line" d="M50 10 L76 88 L64.5 88 L50 44.5 L35.5 88 L24 88 Z" stroke="#3c8a68" stroke-width="2.5"/>
+      <path class="pl-fill" d="M50 10 L76 88 L64.5 88 L50 44.5 L35.5 88 L24 88 Z" fill="#3c8a68"/>
+    </svg>
+    <div class="preload__word" aria-hidden="true">ADHISHTAM</div>
+    <div class="preload__tag" aria-hidden="true">Digital Solutions</div>
+  </div>
+  <div class="preload__meter" aria-hidden="true">
+    <div class="preload__bar"><i id="preloadBar"></i></div>
+    <div class="preload__num"><span id="preloadNum">0</span></div>
+  </div>
 </div>
 
 <div class="progress" id="progress"></div>
