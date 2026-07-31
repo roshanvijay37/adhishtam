@@ -1,0 +1,77 @@
+name: Deploy site to GitHub Pages
+
+# The repo holds more than the website — brand masters, the profile deck,
+# internal notes. Serving the repo root would publish all of it under the
+# client's own domain. This workflow assembles ONLY the site and publishes
+# that, so the source material is never reachable over HTTP.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deploys race; queue instead of cancelling a half-finished one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Assemble the published site
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+
+          # Everything the website actually needs, and nothing else.
+          cp index.html blog.html 404.html robots.txt sitemap.xml _site/
+          cp -r assets _site/
+
+          # Stops Pages running the output through Jekyll.
+          touch _site/.nojekyll
+
+          # CNAME is only present once the custom domain's DNS is live.
+          # Adding it before DNS resolves would redirect the working
+          # github.io URL to a domain that does not answer yet.
+          if [ -f CNAME ]; then
+            cp CNAME _site/
+            echo "Custom domain: $(cat CNAME)"
+          else
+            echo "No CNAME — publishing to the github.io URL."
+          fi
+
+      - name: Fail if source material leaked into the artifact
+        run: |
+          set -euo pipefail
+          leaked=0
+          for p in brand company-profile portfolio _archive .git .htaccess; do
+            if [ -e "_site/$p" ]; then echo "::error::$p must not be published"; leaked=1; fi
+          done
+          if ls _site/*.md >/dev/null 2>&1; then
+            echo "::error::markdown files must not be published"; leaked=1
+          fi
+          [ "$leaked" -eq 0 ] || exit 1
+          echo "Clean. Published files:"
+          find _site -maxdepth 1 -mindepth 1 -printf '  %f\n' | sort
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
