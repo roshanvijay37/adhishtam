@@ -113,24 +113,30 @@ files.
 
 ## Deployment
 
-**[DEPLOY.md](DEPLOY.md) has the full Hostinger walkthrough** — Git integration,
-SSL, auto-deploy webhook, and the go-live checklist.
+**GitHub Pages, published by GitHub Actions.** Hostinger supplies the domain
+name and nothing else — there is no server to log into.
 
-Two places serve this repo:
+Push to `main` → [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
+copies the site into `_site` → Pages serves it over a CDN with free,
+auto-renewing HTTPS. Currently live at
+`https://roshanvijay37.github.io/adhishtam/` until the domain is pointed.
 
-| | |
-|---|---|
-| **Production** | Hostinger shared hosting, root of the domain. hPanel clones the repo into `public_html` and a GitHub webhook re-pulls on every push. |
-| **Staging** | `https://roshanvijay37.github.io/adhishtam/` — GitHub Pages from `main` at `/`. Canonical tags point at the real domain, so it won't compete in search. |
+The workflow publishes **only** `index.html`, `blog.html`, `404.html`,
+`robots.txt`, `sitemap.xml`, `assets/` and `.nojekyll`. `brand/`,
+`company-profile/`, `portfolio/`, the `.md` files and `.git` are never uploaded,
+so they are unreachable over HTTP — and a guard step fails the build if any of
+them ever appear in the artifact.
 
-Because Git deploy clones the **whole repo** into `public_html`, `.htaccess`
-blocks `/.git/`, `brand/`, `company-profile/`, `portfolio/` and the `.md` files
-from being served. Those rules are load-bearing — don't remove them.
+`.htaccess` is dormant: Pages ignores it, and it's excluded from the artifact.
+It stays only so a future move back to Apache hosting is quick.
 
-The domain is currently written as `adhishtam.com` in four files
-(`index.html`, `blog.html`, `robots.txt`, `sitemap.xml`). **This was assumed
-from the profile deck cover, not confirmed** — see DEPLOY.md for the one-liner
-that changes it everywhere.
+**[DEPLOY.md](DEPLOY.md)** has the DNS records, the ordering that matters, and
+the go-live checklist.
+
+The domain is written as `adhishtam.com` in four files (`index.html`,
+`blog.html`, `robots.txt`, `sitemap.xml`). **Assumed from the profile deck
+cover, never confirmed** — DEPLOY.md has the one-liner that changes it
+everywhere.
 
 ## Still needed from the client
 

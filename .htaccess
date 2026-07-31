@@ -1,10 +1,16 @@
 # =============================================================================
-# Adhishtam Digital Solutions — Apache config for Hostinger shared hosting.
+# Adhishtam Digital Solutions — Apache config.
 #
-# This repo is deployed to public_html WHOLE, via hPanel's Git integration.
-# That means the brand masters, the profile deck, the internal notes and the
-# .git directory all land on the public server. Everything that is not the
-# website itself is blocked below. Do not delete those rules.
+# NOT IN USE. The site is hosted on GitHub Pages, which ignores .htaccess, and
+# this file is deliberately excluded from the published artifact.
+#
+# It is kept so that moving to Apache/LiteSpeed hosting (Hostinger, cPanel,
+# anywhere) is a five-minute job instead of a rewrite. If that ever happens and
+# the WHOLE repo gets deployed to public_html, the "hide everything that is not
+# the website" block below is what keeps the brand masters, the profile deck
+# and the .git directory off the public web. Do not delete those rules.
+#
+# See DEPLOY.md for how hosting actually works today.
 # =============================================================================
 
 Options -Indexes
