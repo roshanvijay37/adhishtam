@@ -6,16 +6,16 @@
 <title>Page not found — Adhishtam Digital Solutions</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#061710">
-<link rel="icon" href="/adhishtam/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" id="fav" href="/assets/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
   /* Self-contained: a 404 is served in place of ANY missing URL, at any depth,
      and the browser resolves relative paths against the requested URL — not
-     against this file. So styles are inlined and the two links below are
-     root-absolute. They are written for GitHub Pages at /adhishtam/;
-     when this moves to a real domain, change them to "/". */
+     against this file. So styles are inlined and the links are root-absolute,
+     written for the live domain. The script at the end of <body> rewrites them
+     for the GitHub Pages staging copy, which is served under /adhishtam/. */
   *,*::before,*::after{box-sizing:border-box}*{margin:0;padding:0}
   body{
     min-height:100svh;display:grid;place-content:center;justify-items:center;
@@ -52,6 +52,15 @@
   <h1>404</h1>
   <h2>This page went off-brief</h2>
   <p>The link is broken or the page has moved. Everything we do is still one click away.</p>
-  <a href="/adhishtam/">Back to home</a>
+  <a id="home" href="/">Back to home</a>
+
+  <script>
+    /* Production serves this at the domain root. The GitHub Pages staging copy
+       is a project site under /adhishtam/, so point the links there instead. */
+    if (location.hostname.slice(-10) === '.github.io') {
+      document.getElementById('home').href = '/adhishtam/';
+      document.getElementById('fav').href = '/adhishtam/assets/img/favicon.svg';
+    }
+  </script>
 </body>
 </html>

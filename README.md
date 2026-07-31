@@ -113,9 +113,24 @@ files.
 
 ## Deployment
 
-GitHub Pages, served from `main` at `/` — no Action needed, since there is
-nothing to build. Hostinger later: upload the repo contents to `public_html`
-and change the two root-absolute links in `404.html`.
+**[DEPLOY.md](DEPLOY.md) has the full Hostinger walkthrough** — Git integration,
+SSL, auto-deploy webhook, and the go-live checklist.
+
+Two places serve this repo:
+
+| | |
+|---|---|
+| **Production** | Hostinger shared hosting, root of the domain. hPanel clones the repo into `public_html` and a GitHub webhook re-pulls on every push. |
+| **Staging** | `https://roshanvijay37.github.io/adhishtam/` — GitHub Pages from `main` at `/`. Canonical tags point at the real domain, so it won't compete in search. |
+
+Because Git deploy clones the **whole repo** into `public_html`, `.htaccess`
+blocks `/.git/`, `brand/`, `company-profile/`, `portfolio/` and the `.md` files
+from being served. Those rules are load-bearing — don't remove them.
+
+The domain is currently written as `adhishtam.com` in four files
+(`index.html`, `blog.html`, `robots.txt`, `sitemap.xml`). **This was assumed
+from the profile deck cover, not confirmed** — see DEPLOY.md for the one-liner
+that changes it everywhere.
 
 ## Still needed from the client
 

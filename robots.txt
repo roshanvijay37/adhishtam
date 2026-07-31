@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Source material that ships in the repo but is not part of the website.
+# Also blocked at the server in .htaccess — this is just belt and braces.
+Disallow: /brand/
+Disallow: /company-profile/
+Disallow: /portfolio/
+Disallow: /_archive/
+
+Sitemap: https://adhishtam.com/sitemap.xml

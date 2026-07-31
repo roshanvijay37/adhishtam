@@ -1,0 +1,101 @@
+# =============================================================================
+# Adhishtam Digital Solutions — Apache config for Hostinger shared hosting.
+#
+# This repo is deployed to public_html WHOLE, via hPanel's Git integration.
+# That means the brand masters, the profile deck, the internal notes and the
+# .git directory all land on the public server. Everything that is not the
+# website itself is blocked below. Do not delete those rules.
+# =============================================================================
+
+Options -Indexes
+DirectoryIndex index.html
+
+# --- force HTTPS -------------------------------------------------------------
+# Both conditions must fail before redirecting, so this cannot loop behind
+# Hostinger's proxy (which terminates TLS and sets X-Forwarded-Proto).
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # --- canonical host --------------------------------------------------------
+  # Pick ONE and uncomment it, so the site does not answer on two hostnames.
+  # Leave both commented until the domain is actually pointed at Hostinger.
+  #
+  # www -> non-www:
+  # RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+  # RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
+  #
+  # non-www -> www:
+  # RewriteCond %{HTTP_HOST} !^www\. [NC]
+  # RewriteRule ^ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# --- hide everything that is not the website ---------------------------------
+# Source material and repo plumbing must never be served.
+RedirectMatch 404 (?i)^/\.git(/|$)
+RedirectMatch 404 (?i)^/(brand|company-profile|portfolio|_archive)(/|$)
+RedirectMatch 404 (?i)^/[^/]+\.(md|ps1|zip|psd|ai)$
+RedirectMatch 404 (?i)^/\.(gitignore|nojekyll|htaccess|env|secrets)
+
+<FilesMatch "(?i)\.(md|log|bak|sql|zip|ini|sh|ps1)$">
+  Require all denied
+</FilesMatch>
+
+# --- error page --------------------------------------------------------------
+ErrorDocument 404 /404.html
+
+# --- compression -------------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+  AddOutputFilterByType DEFLATE application/javascript application/x-javascript
+  AddOutputFilterByType DEFLATE application/json application/xml
+  AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# --- caching -----------------------------------------------------------------
+# Image filenames are stable and their contents never change, so they are
+# cached hard. CSS and JS are edited in place with no content hash in the
+# filename, so they only get a day — long enough to help, short enough that a
+# fix reaches returning visitors without anyone remembering to bust a cache.
+# For an instant bust, add ?v=2 to the tag in the HTML.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault                       "access plus 1 month"
+  ExpiresByType text/html              "access plus 0 seconds"
+  ExpiresByType text/css               "access plus 1 day"
+  ExpiresByType application/javascript "access plus 1 day"
+  ExpiresByType image/jpeg             "access plus 1 year"
+  ExpiresByType image/png              "access plus 1 year"
+  ExpiresByType image/svg+xml          "access plus 1 year"
+  ExpiresByType image/webp             "access plus 1 year"
+  ExpiresByType text/xml               "access plus 1 day"
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(jpg|jpeg|png|webp|woff2)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.(css|js|svg)$">
+    Header set Cache-Control "public, max-age=86400"
+  </FilesMatch>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+
+  # --- security headers ------------------------------------------------------
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+  Header unset X-Powered-By
+</IfModule>
+
+# --- correct types -----------------------------------------------------------
+<IfModule mod_mime.c>
+  AddType image/svg+xml .svg
+  AddType image/webp    .webp
+  AddType font/woff2    .woff2
+</IfModule>
