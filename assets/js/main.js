@@ -13,7 +13,10 @@
   /* ----------------------------------------------------------- preloader */
   (function () {
     var pre = $('#preload');
-    if (!pre) return;
+
+    // Pages without a preloader (blog) still need is-ready, since some
+    // entrance animations key off it.
+    if (!pre) { document.body.classList.add('is-ready'); return; }
 
     var HOLD = 5200;  // deliberate dwell — the animation is timed to fill it
     var CAP  = 9000;  // hard ceiling, so a stalled asset can never trap anyone
@@ -193,7 +196,7 @@
 
   /* ------------------------------------------------------- scroll reveal */
   (function () {
-    var els = $$('.rv, [data-inview]');
+    var els = $$('.rv, .rv-mask, [data-inview]');
     if (!els.length) return;
     if (!('IntersectionObserver' in window) || reduced) {
       els.forEach(function (el) { el.classList.add('is-in'); });
@@ -306,6 +309,21 @@
     });
   })();
 
+  /* ------------------------------------------------- portfolio pointer light
+     A warm highlight tracks the cursor across each card, so the gold reads as
+     a light source rather than a flat overlay. Pointer-only by definition —
+     touch devices get the always-on caption treatment instead. */
+  (function () {
+    if (reduced || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    $$('.work__item').forEach(function (card) {
+      card.addEventListener('pointermove', function (e) {
+        var r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
+        card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
+      }, { passive: true });
+    });
+  })();
+
   /* --------------------------------------------------------------- forms */
   (function () {
     var form = $('#contactForm');
@@ -368,6 +386,7 @@
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     var W = 0, H = 0, R = 34, cells = [], base = null;
     var px = -9999, py = -9999, hasMouse = false, t = 0, running = false;
+    var motes = [];
 
     function hexPath(c, x, y, r) {
       c.beginPath();
@@ -408,6 +427,22 @@
       bc.strokeStyle = 'rgba(201,169,97,0.075)';
       bc.lineWidth = 1;
       cells.forEach(function (c) { hexPath(bc, c.x, c.y, R); bc.stroke(); });
+
+      // Gold motes drifting up through the lattice. Deliberately few — this
+      // rides the existing frame loop and must not cost anything noticeable.
+      var count = W < 640 ? 14 : 26;
+      motes = [];
+      for (var m = 0; m < count; m++) {
+        motes.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          r: 0.6 + Math.random() * 1.5,
+          v: 0.12 + Math.random() * 0.34,      // upward drift
+          sway: 0.4 + Math.random() * 1.1,     // horizontal wander
+          phase: Math.random() * Math.PI * 2,
+          a: 0.16 + Math.random() * 0.42
+        });
+      }
     }
 
     function frame() {
@@ -434,6 +469,19 @@
         hexPath(ctx, c.x, c.y, R);
         ctx.stroke();
       }
+
+      for (var j = 0; j < motes.length; j++) {
+        var p = motes[j];
+        p.y -= p.v;
+        p.phase += 0.008;
+        if (p.y < -6) { p.y = H + 6; p.x = Math.random() * W; }
+        var mx = p.x + Math.sin(p.phase) * p.sway * 9;
+        ctx.beginPath();
+        ctx.arc(mx, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(232,206,142,' + p.a.toFixed(2) + ')';
+        ctx.fill();
+      }
+
       requestAnimationFrame(frame);
     }
 

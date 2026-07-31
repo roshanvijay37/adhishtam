@@ -27,6 +27,7 @@
 <div class="progress" id="progress"></div>
 <div class="cursor" id="cursor" aria-hidden="true"></div>
 <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
 
 <header class="nav" id="nav">
   <div class="nav__inner">
@@ -69,11 +70,12 @@
 
 <main>
 
-<section class="page-hero">
+<section class="page-hero has-deco">
+  <img class="deco deco--hex" src="assets/anim/hex-drift.svg" alt="" aria-hidden="true" width="600" height="600">
   <div class="hero__glow" aria-hidden="true"></div>
   <div class="wrap" style="position:relative;z-index:2">
     <span class="eyebrow">Journal</span>
-    <h1 class="h2" style="margin-block:1.2rem 1.4rem">Notes from<br>the studio</h1>
+    <h1 class="h2 rv-mask is-in" style="margin-block:1.2rem 1.4rem">Notes from<br>the studio</h1>
     <p class="lede" style="color:var(--cream-dim)">What we're learning about branding, content and paid media — written by the people doing the work, not a content mill.</p>
   </div>
 </section>
@@ -121,6 +123,7 @@
 </main>
 
 <footer class="footer">
+  <img class="footer__mark" src="assets/anim/mark-orbit.svg" alt="" aria-hidden="true" loading="lazy" width="100" height="100">
   <div class="wrap footer__top">
     <div>
       <div class="footer__logo"><img src="assets/img/logo-full-cream.png" alt="Adhishtam Digital Solutions" width="1000" height="572" loading="lazy"></div>

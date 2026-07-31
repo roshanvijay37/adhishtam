@@ -72,6 +72,7 @@
 <div class="progress" id="progress"></div>
 <div class="cursor" id="cursor" aria-hidden="true"></div>
 <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
 
 <!-- nav -->
 <header class="nav" id="nav">
@@ -125,7 +126,7 @@
 
     <h1 class="display hero__title">
       <span class="line"><span>We create</span></span>
-      <span class="line"><span class="gold-text">Market</span></span>
+      <span class="line"><span class="gold-text gold-text--shine">Market</span></span>
       <span class="line"><span class="outline-text">Grow</span></span>
     </h1>
 
@@ -176,7 +177,7 @@
     <div class="section-head section-head--split">
       <div class="rv">
         <span class="eyebrow">01 — About us</span>
-        <h2 class="h2" style="margin-top:1.2rem">A studio built<br>for the whole job</h2>
+        <h2 class="h2 rv-mask" style="margin-top:1.2rem">A studio built<br>for the whole job</h2>
       </div>
       <p class="lede rv rv-1" style="color:rgba(6,23,16,.72)">Most brands stitch together a designer, a video guy, an ads freelancer and hope it adds up. It rarely does.</p>
     </div>
@@ -213,7 +214,7 @@
     <div class="section-head section-head--split">
       <div class="rv">
         <span class="eyebrow">02 — Services</span>
-        <h2 class="h2" style="margin-top:1.2rem">Everything a brand<br>needs. In one place.</h2>
+        <h2 class="h2 rv-mask" style="margin-top:1.2rem">Everything a brand<br>needs. In one place.</h2>
       </div>
       <p class="lede rv rv-1" style="color:var(--cream-dim)">Nine disciplines, one hundred plus services, and a specialist for each. Open any department to see the full list.</p>
     </div>
@@ -396,7 +397,7 @@
     <div class="section-head section-head--split">
       <div class="rv">
         <span class="eyebrow">03 — Portfolio</span>
-        <h2 class="h2" style="margin-top:1.2rem">Selected work</h2>
+        <h2 class="h2 rv-mask" style="margin-top:1.2rem">Selected work</h2>
       </div>
       <p class="lede rv rv-1" style="color:rgba(6,23,16,.72)">Hospitality in Bahrain, education in coastal Karnataka, and brands finding their first shape.</p>
     </div>
@@ -496,12 +497,13 @@
 </section>
 
 <!-- why -->
-<section class="section section--green">
+<section class="section section--green has-deco">
+  <img class="deco deco--hex" src="assets/anim/hex-drift.svg" alt="" aria-hidden="true" loading="lazy" width="600" height="600">
   <div class="wrap">
     <div class="section-head section-head--split">
       <div class="rv">
         <span class="eyebrow">04 — Why Adhishtam</span>
-        <h2 class="h2" style="margin-top:1.2rem">Why brands<br>stay with us</h2>
+        <h2 class="h2 rv-mask" style="margin-top:1.2rem">Why brands<br>stay with us</h2>
       </div>
       <p class="lede rv rv-1" style="color:var(--cream-dim)">Not because of a retainer clause. Because the work keeps landing.</p>
     </div>
@@ -518,11 +520,12 @@
 </section>
 
 <!-- process -->
-<section class="section" style="padding-top:0">
+<section class="section has-deco" style="padding-top:0">
+  <img class="deco deco--topo" src="assets/anim/topo-summit.svg" alt="" aria-hidden="true" loading="lazy" width="600" height="600">
   <div class="wrap">
     <div class="section-head rv" style="margin-top:clamp(3rem,6vw,5rem)">
       <span class="eyebrow">05 — How we work</span>
-      <h2 class="h2" style="margin-top:1.2rem">Four steps, no mystery</h2>
+      <h2 class="h2 rv-mask" style="margin-top:1.2rem">Four steps, no mystery</h2>
     </div>
   </div>
   <div class="wrap">
@@ -539,7 +542,9 @@
 <section class="cta">
   <div class="wrap cta__inner">
     <span class="eyebrow eyebrow--plain rv" style="color:var(--ink)">Ready when you are</span>
-    <h2 class="h2 rv rv-1">Let's build your<br>brand digitally</h2>
+    <!-- Split exactly as the closing page of their 2026 deck does it:
+         first line cream, second line gold. -->
+    <h2 class="h2 rv rv-1">Let&rsquo;s build your<br><span class="gold-text gold-text--shine">brand digitally</span></h2>
     <div class="btn-row rv rv-2" style="justify-content:center">
       <a class="btn" href="#contact" data-magnet style="background:var(--ink);color:var(--cream)">Start a project
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
@@ -554,7 +559,7 @@
   <div class="wrap">
     <div class="section-head rv">
       <span class="eyebrow">06 — Contact us</span>
-      <h2 class="h2" style="margin-top:1.2rem">Tell us what<br>you're building</h2>
+      <h2 class="h2 rv-mask" style="margin-top:1.2rem">Tell us what<br>you're building</h2>
     </div>
 
     <div class="contact__grid">
@@ -642,6 +647,7 @@
 </main>
 
 <footer class="footer">
+  <img class="footer__mark" src="assets/anim/mark-orbit.svg" alt="" aria-hidden="true" loading="lazy" width="100" height="100">
   <div class="wrap footer__top">
     <div>
       <div class="footer__logo"><img src="assets/img/logo-full-cream.png" alt="Adhishtam Digital Solutions" width="1000" height="572" loading="lazy"></div>

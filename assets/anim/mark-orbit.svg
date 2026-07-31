@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 100 100" width="100" height="100" role="img"
+     aria-label="Adhishtam mark">
+  <title>Adhishtam mark, orbiting</title>
+  <!-- The brand mark with a light travelling the ring. Used as a large,
+       low-opacity watermark. Animation is SMIL + CSS so it still runs when
+       the file is loaded through <img>, where scripts would not. -->
+  <style>
+    .ring { fill: none; stroke: #c9a961; stroke-width: 6.5; }
+    .peak { fill: #3c8a68; animation: peak 7s ease-in-out infinite alternate; }
+    .spark { fill: #ffeec2; }
+    @keyframes peak { from { opacity: .55 } to { opacity: 1 } }
+    @media (prefers-reduced-motion: reduce) {
+      .peak { animation: none; opacity: .8 }
+      .spark { display: none }
+    }
+  </style>
+
+  <path id="arc" class="ring" d="M37.32 73.19 A30 30 0 1 1 62.68 73.19"/>
+  <path class="peak" d="M50 10 L76 88 L64.5 88 L50 44.5 L35.5 88 L24 88 Z"/>
+
+  <circle class="spark" r="3.4">
+    <animateMotion dur="8s" repeatCount="indefinite" rotate="auto">
+      <mpath xlink:href="#arc" href="#arc"/>
+    </animateMotion>
+    <animate attributeName="opacity"
+             values="0;1;1;0" keyTimes="0;0.08;0.92;1"
+             dur="8s" repeatCount="indefinite"/>
+  </circle>
+</svg>

@@ -35,6 +35,10 @@ jobs:
           cp index.html blog.html 404.html robots.txt sitemap.xml _site/
           cp -r assets _site/
 
+          # Docs live next to the things they document (assets/anim/README.md),
+          # which is right for maintainers and wrong for the server.
+          find _site -name '*.md' -delete
+
           # Stops Pages running the output through Jekyll.
           touch _site/.nojekyll
 
@@ -55,12 +59,16 @@ jobs:
           for p in brand company-profile portfolio _archive .git .htaccess; do
             if [ -e "_site/$p" ]; then echo "::error::$p must not be published"; leaked=1; fi
           done
-          if ls _site/*.md >/dev/null 2>&1; then
-            echo "::error::markdown files must not be published"; leaked=1
+          # Recursive, not just the root — assets/ carries its own docs.
+          if find _site -name '*.md' | grep -q .; then
+            echo "::error::markdown files must not be published:"
+            find _site -name '*.md'
+            leaked=1
           fi
           [ "$leaked" -eq 0 ] || exit 1
-          echo "Clean. Published files:"
-          find _site -maxdepth 1 -mindepth 1 -printf '  %f\n' | sort
+          echo "Clean. Published tree:"
+          find _site -mindepth 1 -type d -printf '  %P/\n' | sort
+          echo "  ($(find _site -type f | wc -l) files, $(du -sh _site | cut -f1) total)"
 
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -1236,6 +1236,167 @@ html.is-loading, html.is-loading body { overflow: hidden; }
 .rv-4 { transition-delay: .32s; }
 .rv-5 { transition-delay: .4s; }
 
+/* ==========================================================================
+   MOTION LAYER
+   Four committed SVG assets in assets/anim/ plus the CSS that places them.
+   Everything here is decorative: it sits behind content, never intercepts a
+   pointer, and switches off under prefers-reduced-motion.
+   ========================================================================== */
+
+/* --- film grain ----------------------------------------------------------
+   One fixed tile over the whole page. Kills the banding that large flat
+   greens produce on cheap phone panels, and reads as print texture. Animated
+   by transform only, so it composites on the GPU and never triggers layout. */
+.grain {
+  position: fixed;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  z-index: 400;
+  pointer-events: none;
+  opacity: .055;
+  background-image: url("../anim/grain.svg");
+  background-size: 190px 190px;
+  animation: grain 1.1s steps(5) infinite;
+  will-change: transform;
+}
+@keyframes grain {
+  0%   { transform: translate3d(0, 0, 0); }
+  20%  { transform: translate3d(-3%, 2%, 0); }
+  40%  { transform: translate3d(2%, -3%, 0); }
+  60%  { transform: translate3d(-2%, -2%, 0); }
+  80%  { transform: translate3d(3%, 1%, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+/* --- decorative backdrops ------------------------------------------------ */
+.has-deco { position: relative; overflow: hidden; isolation: isolate; }
+.has-deco > .wrap { position: relative; z-index: 1; }
+
+.deco {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+/* Topographic contours — the mark is a summit in a ring; this is the same
+   idea drawn as a map. Sits behind the process steps. */
+.deco--topo {
+  width: min(120vw, 1000px);
+  aspect-ratio: 1;
+  top: 50%; left: 50%;
+  translate: -50% -50%;
+  opacity: .5;
+}
+
+/* Honeycomb, lifted from the profile deck cover. Used where there is no
+   hero canvas to carry the pattern. */
+.deco--hex {
+  width: min(150vw, 1100px);
+  aspect-ratio: 1;
+  top: -25%; right: -18%;
+  opacity: .75;
+}
+.deco--hex-left { right: auto; left: -22%; top: -30%; }
+
+@media (max-width: 700px) {
+  .deco--topo { opacity: .38; width: 150vw; }
+  .deco--hex  { opacity: .55; }
+}
+
+/* --- footer watermark ---------------------------------------------------- */
+.footer { position: relative; overflow: hidden; }
+.footer__mark {
+  position: absolute;
+  right: -4%;
+  bottom: -18%;
+  width: min(46vw, 340px);
+  opacity: .07;
+  pointer-events: none;
+  z-index: 0;
+}
+.footer > .wrap { position: relative; z-index: 1; }
+
+/* --- heading mask reveal -------------------------------------------------
+   Headings wipe upward into place instead of just fading. Negative bottom
+   inset gives descenders and the outline stroke room to escape the clip. */
+.rv-mask {
+  clip-path: inset(0 0 105% 0);
+  transform: translateY(12px);
+  transition: clip-path 1.05s var(--ease), transform 1.05s var(--ease);
+}
+.rv-mask.is-in {
+  clip-path: inset(0 0 -14% 0);
+  transform: none;
+}
+
+/* --- metallic sweep ------------------------------------------------------
+   A brighter band travels across gold text, so it behaves like foil rather
+   than a flat gradient. */
+.gold-text--shine {
+  background-image: linear-gradient(100deg,
+    var(--gold-dp) 0%, var(--gold-lt) 28%, #fff4d6 46%,
+    var(--gold-lt) 64%, var(--gold-dp) 100%);
+  background-size: 260% 100%;
+  animation: shine 9s linear infinite;
+}
+@keyframes shine {
+  from { background-position: 130% 0; }
+  to   { background-position: -130% 0; }
+}
+
+/* --- portfolio: light follows the pointer -------------------------------- */
+.work__item::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 50%),
+              rgba(232, 206, 142, .26), transparent 62%);
+  opacity: 0;
+  transition: opacity .45s var(--ease);
+}
+.work__item:hover::before { opacity: 1; }
+.work__veil { z-index: 2; }
+.work__item::after { z-index: 3; }
+
+/* --- accordion: gold thread draws across the row ------------------------- */
+.svc__item { position: relative; }
+.svc__item::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: -1px;
+  width: 100%; height: 1px;
+  background: var(--gold-grad);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .7s var(--ease);
+}
+.svc__item:hover::after,
+.svc__item:focus-within::after { transform: scaleX(1); }
+
+/* --- stats: rule draws in under each figure ------------------------------ */
+.stat { position: relative; padding-bottom: .9rem; }
+.stat::after {
+  content: "";
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 100%; height: 1px;
+  background: var(--gold);
+  opacity: .45;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.1s var(--ease) .3s;
+}
+.is-ready .stat::after { transform: scaleX(1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .grain { animation: none; opacity: .04; }
+  .gold-text--shine { animation: none; background-position: 50% 0; }
+  .rv-mask { clip-path: none; transform: none; }
+}
+
 /* --- phones --------------------------------------------------------------
    Most of this site's traffic is a phone. Everything below is about thumbs
    and small text, not layout — the grids already collapse on their own. */
@@ -1299,6 +1460,8 @@ html:not(.js) .cursor,
 html:not(.js) .cursor-dot,
 html:not(.js) .progress { display: none; }
 html:not(.js) .rv { opacity: 1; transform: none; }
+html:not(.js) .rv-mask { clip-path: none; transform: none; }
+html:not(.js) .stat::after { transform: scaleX(1); }
 html:not(.js) .hero__title .line > span { transform: none; }
 html:not(.js) .vm__card::before { transform: scaleY(1); }
 html:not(.js) .svc__panel { height: auto; }
