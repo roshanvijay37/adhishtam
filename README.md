@@ -3,20 +3,58 @@
 Website project for **Adhishtam Digital Solutions** — a digital marketing and
 creative agency (adhishtam.com, [@adhishtam.in](https://instagram.com/adhishtam.in)).
 
-Right now this repo holds the client's brand and portfolio material, cleaned up
-and organised. The site itself is not built yet.
-
 👉 **[BRAND.md](BRAND.md)** is the working reference — name, colours, services,
-positioning, and the open questions that need the client's answer.
+positioning, and the open questions that still need the client's answer.
 
 ---
+
+## The site
+
+A hand-written static site. **No build step, no dependencies, no framework** —
+open `index.html` in a browser and it runs. That is deliberate: it deploys to
+GitHub Pages as-is, moves to Hostinger by uploading the same folder, and needs
+no Node toolchain to maintain.
+
+| | |
+|---|---|
+| `index.html` | Home, About, Services, Portfolio, Clients, Why, Process, Contact |
+| `blog.html` | Journal index — three posts queued, none written yet |
+| `404.html` | Self-contained; its two links are root-absolute (see the note inside) |
+| `assets/css/style.css` | Everything. Custom properties, fluid type, no preprocessor |
+| `assets/js/main.js` | ~380 lines, vanilla. Preloader, cursor, hex canvas, reveals, accordion, portfolio filter, contact form |
+| `assets/img/` | Web-optimised: 1.3 MB total, down from 25 MB of source |
+| `.nojekyll` | Stops GitHub Pages running the files through Jekyll |
+
+**Fonts** are Syne (display) + Poppins (body), from Google Fonts — the only
+external request the site makes. Poppins matches the profile deck; Syne is a
+stand-in until the client names their real display face.
+
+**The contact form has no backend**, because a static host cannot have one. It
+composes a `mailto:` or a pre-filled WhatsApp message from the fields. Nothing
+is stored or sent server-side. If they want real form submissions later, a
+Formspree/Web3Forms endpoint is a five-line change.
+
+Accessibility and resilience were built in, not bolted on: the whole site is
+usable with JavaScript disabled (`html:not(.js)` fallbacks settle every
+animated element), honours `prefers-reduced-motion`, keeps visible focus rings,
+and labels the icon-only links.
+
+### Running it
+
+There is no dev server and none is needed — double-click `index.html`. The only
+caveat is that `file://` blocks nothing here, so what you see locally is what
+Pages will serve.
 
 ## Layout
 
 ```
-brand/              logo + palette
+index.html          the site
+blog.html
+404.html
+assets/             css, js, and web-optimised images
+brand/              logo + palette (source)
 company-profile/    the 2026 profile deck, plus page-by-page PNG renders
-portfolio/          client work — logos/ and print/
+portfolio/          client work, full resolution — logos/ and print/
 _archive/           original delivery zip (not in git)
 ```
 
@@ -73,9 +111,26 @@ through the `Windows.Data.Pdf` API that ships with Windows, driven from
 PowerShell, then read as images. Those renders are the `company-profile/pages/`
 files.
 
-## Next
+## Deployment
 
-The website. Nothing has been decided yet — stack, scope, page structure and
-hosting are all open. `BRAND.md` lists what is still missing from the client
-before a full site can be built (fonts, transparent logo/SVG, office address,
-team, case-study detail, testimonials).
+GitHub Pages, served from `main` at `/` — no Action needed, since there is
+nothing to build. Hostinger later: upload the repo contents to `public_html`
+and change the two root-absolute links in `404.html`.
+
+## Still needed from the client
+
+The site is live-ready but four of the eight portfolio filters — Social Media,
+Web Design, Video Editing, Photography — have **no work to show**, and fall
+back to a "request samples" card. That is the biggest gap, and it is odd given
+social and video are most of what they sell.
+
+Also outstanding:
+
+- **The real display font.** Syne is a placeholder.
+- **A vector logo (SVG).** The committed PNGs are traced off a 135 MB raster
+  master; an SVG would sharpen the header and favicon.
+- **Case-study detail** — dates, brief, outcome for each portfolio piece.
+- **Testimonials** and **team names/photos**.
+- **Blog posts.** Three topics are outlined in `blog.html`; none are written.
+- **Confirmation of the two phone numbers** — the deck shows +91 8762700493,
+  the client sent 7618791635 for WhatsApp. Both are on the site as-is.
