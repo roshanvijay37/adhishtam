@@ -1,7 +1,10 @@
 # Adhishtam
 
-Website project for **Adhishtam Digital Solutions** — a digital marketing and
-creative agency (adhishtam.com, [@adhishtam.in](https://instagram.com/adhishtam.in)).
+### 🌐 Live at **[adhishtam.com](https://adhishtam.com)**
+
+Website for **Adhishtam Digital Solutions** — a creative and digital marketing
+agency in Moodbidri, Mangalore
+([@adhishtam.in](https://instagram.com/adhishtam.in)).
 
 👉 **[BRAND.md](BRAND.md)** is the working reference — name, colours, services,
 positioning, and the open questions that still need the client's answer.
@@ -118,8 +121,8 @@ name and nothing else — there is no server to log into.
 
 Push to `main` → [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
 copies the site into `_site` → Pages serves it over a CDN with free,
-auto-renewing HTTPS. Currently live at
-`https://roshanvijay37.github.io/adhishtam/` until the domain is pointed.
+auto-renewing HTTPS. Live at **adhishtam.com** since 2026-08-01; `www` and the
+old `roshanvijay37.github.io/adhishtam/` URL both 301 to the apex.
 
 The workflow publishes **only** `index.html`, `blog.html`, `404.html`,
 `robots.txt`, `sitemap.xml`, `assets/` and `.nojekyll`. `brand/`,
@@ -131,12 +134,11 @@ them ever appear in the artifact.
 It stays only so a future move back to Apache hosting is quick.
 
 **[DEPLOY.md](DEPLOY.md)** has the DNS records, the ordering that matters, and
-the go-live checklist.
+what's left to do (Search Console, domain verification).
 
-The domain is written as `adhishtam.com` in four files (`index.html`,
-`blog.html`, `robots.txt`, `sitemap.xml`). **Assumed from the profile deck
-cover, never confirmed** — DEPLOY.md has the one-liner that changes it
-everywhere.
+The domain is hardcoded in `index.html`, `blog.html`, `robots.txt`,
+`sitemap.xml` and `CNAME` — DEPLOY.md has the one-liner that changes all of
+them if it ever moves.
 
 ## Still needed from the client
 

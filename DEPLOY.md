@@ -7,10 +7,19 @@ Push to `main` → [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml
 assembles the site → Pages serves it from GitHub's CDN with free, auto-renewing
 HTTPS. There is no server to log into and nothing to upload.
 
-> **Assumption to check.** The domain has never been confirmed, so every
-> canonical URL, the sitemap and the social-share tags are written for
-> **`adhishtam.com`** — the address printed on the 2026 profile deck cover.
-> Fix it before go-live if it's wrong: see [Changing the domain](#changing-the-domain).
+## Status: live
+
+**<https://adhishtam.com>** — went live 2026-08-01. Nothing below needs doing;
+it is kept as the record of how it was set up and what to change if anything moves.
+
+| Check | |
+|---|---|
+| `https://adhishtam.com` | 200, Let's Encrypt cert, auto-renewing |
+| `http://` → `https://` | 301 |
+| `www.adhishtam.com` → apex | 301 |
+| `roshanvijay37.github.io/adhishtam/` → apex | 301 |
+| Branded 404 on a bad URL | yes |
+| `/BRAND.md`, `/brand/`, `/portfolio/`, `/company-profile/`, `/.htaccess` | 404 — never uploaded |
 
 ---
 
@@ -36,7 +45,9 @@ Verified on the live site — all return 404:
 
 ---
 
-## Pointing the Hostinger domain at Pages
+## How the domain was pointed
+
+*Done — recorded here for reference, and for whoever has to move it next.*
 
 ### 1. DNS records
 
@@ -63,49 +74,48 @@ IPv6 is optional but free and improves reach — `AAAA` on `@`:
 > If email at this domain is on Hostinger, its `MX` records live in this same
 > zone. Changing `A` records does **not** affect email — but deleting the `MX`
 > rows does. Only touch `A`, `AAAA` and the `www` `CNAME`.
+>
+> As of go-live **`adhishtam.com` has no `MX` and no `TXT` records at all** —
+> there is no mailbox at this domain, and the business runs on
+> `adhishtamofficial@gmail.com`. So nothing was at risk here. It also means
+> that if a `name@adhishtam.com` address is ever wanted, `MX` records have to
+> be added; the website will not be affected either way.
 
 Propagation is usually minutes; allow up to 24 hours. Check with
 `nslookup adhishtam.com` — you want the 185.199.x.x addresses back.
 
 ### 2. Tell GitHub the domain
 
-Only once DNS resolves. Create a file called `CNAME` at the repo root
-containing just the bare domain, no protocol and no trailing slash:
+Only once DNS resolves. A file called `CNAME` at the repo root holds the bare
+domain, no protocol and no trailing slash:
 
 ```
 adhishtam.com
 ```
 
-Commit and push. The workflow picks it up automatically.
-
 > **Do not add `CNAME` before the DNS is live.** GitHub redirects the working
 > `roshanvijay37.github.io/adhishtam/` URL to the custom domain the moment it
 > is set. If that domain isn't answering yet, the site goes dark until it is.
 
-Then GitHub → repo → **Settings** → **Pages**. The custom domain should already
-be filled in and show a DNS check passing.
+**The file alone is not enough with Actions-based publishing.** It keeps the
+setting stable across deploys, but the domain must also be registered against
+the Pages site itself — GitHub → repo → **Settings** → **Pages** → *Custom
+domain*. (This was done over the API; either way works.)
 
 ### 3. HTTPS
 
-Same page, tick **Enforce HTTPS**. The box is greyed out until GitHub has
-issued the certificate — usually a few minutes after the DNS check passes,
-occasionally an hour. Nothing to buy or renew, ever.
+Same page, tick **Enforce HTTPS**. The box stays greyed out until GitHub has
+issued the certificate — that took about five minutes here, and the redirect
+itself took another minute or two to propagate after being switched on. Nothing
+to buy and nothing to renew, ever.
 
-### 4. Verify
+### 4. Still worth doing
 
-- [ ] `https://adhishtam.com` loads with a valid padlock
-- [ ] `http://adhishtam.com` redirects to `https://`
-- [ ] `https://www.adhishtam.com` redirects to the apex
-- [ ] `https://adhishtam.com/BRAND.md` returns 404
-- [ ] `https://adhishtam.com/brand/` returns 404
-- [ ] A made-up URL shows the branded 404 page, not GitHub's
-- [ ] Contact form opens an email; WhatsApp button opens a chat
 - [ ] Submit `https://adhishtam.com/sitemap.xml` to
       [Google Search Console](https://search.google.com/search-console)
-
-Optional but worth doing: GitHub → your **account** settings → **Pages** →
-verify the domain. That stops anyone else pointing their repo at it if the DNS
-is ever left dangling.
+- [ ] GitHub → **account** settings → **Pages** → verify the domain. Stops
+      anyone else claiming it on their own repo if the DNS is ever left dangling.
+- [ ] Put the domain in the Instagram bio and the Google Business Profile
 
 ---
 
@@ -122,7 +132,8 @@ To republish without a code change: **Actions** → *Deploy site to GitHub Pages
 
 ## Changing the domain
 
-Hardcoded in four files — change all of them together:
+`adhishtam.com` is hardcoded in four files plus `CNAME`. If the domain ever
+changes, change all of them together:
 
 | File | What to change |
 |---|---|
@@ -131,7 +142,7 @@ Hardcoded in four files — change all of them together:
 | `robots.txt` | the `Sitemap:` line |
 | `sitemap.xml` | both `<loc>` entries |
 
-Plus `CNAME`, once it exists. From Git Bash in the repo folder:
+From Git Bash in the repo folder:
 
 ```bash
 grep -rl 'adhishtam\.com' --include='*.html' --include='*.txt' --include='*.xml' . \
