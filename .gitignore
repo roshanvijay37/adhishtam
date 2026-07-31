@@ -1,0 +1,38 @@
+# ---------------------------------------------------------------------------
+# Oversized source files — these exceed GitHub's 100 MB per-file hard limit.
+# They stay on the local machine only. See README.md > "Files not in git".
+# ---------------------------------------------------------------------------
+company-profile/adhishtam-company-profile-2026.pdf
+brand/adhishtam-logo-primary.pdf
+
+# Redundant: byte-for-byte the same files already committed under portfolio/
+_archive/
+
+# ---------------------------------------------------------------------------
+# OS / editor noise
+# ---------------------------------------------------------------------------
+.DS_Store
+._*
+__MACOSX/
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# ---------------------------------------------------------------------------
+# Secrets — never commit
+# ---------------------------------------------------------------------------
+.secrets.local
+.env
+.env.*
+!.env.example
+
+# ---------------------------------------------------------------------------
+# Web toolchain (for when the site lands here)
+# ---------------------------------------------------------------------------
+node_modules/
+dist/
+build/
+.next/
+.vercel/
+*.log
