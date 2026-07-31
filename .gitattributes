@@ -1,0 +1,21 @@
+# This repo is deployed onto a Linux server (Hostinger) by cloning it.
+# Server-side config must arrive with LF endings whatever the contributor's
+# platform or core.autocrlf setting — a stray CR in .htaccess ends up inside
+# directive values and silently breaks rules.
+
+* text=auto eol=lf
+
+.htaccess   text eol=lf
+*.html      text eol=lf
+*.css       text eol=lf
+*.js        text eol=lf
+*.svg       text eol=lf
+*.xml       text eol=lf
+*.txt       text eol=lf
+*.md        text eol=lf
+
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.pdf  binary
+*.zip  binary
