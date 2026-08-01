@@ -1680,6 +1680,142 @@ html.is-loading, html.is-loading body { overflow: hidden; }
   .scroll-cue { display: none; }
 }
 
+/* ==========================================================================
+   ENHANCEMENT LAYER
+   Layered on top of the motion system — nothing above is replaced or removed.
+   Additive only: no copy, layout, spacing, type or palette changes. Every
+   colour here is an existing token.
+
+   Cost discipline: no new always-on animation. Everything is pointer-driven
+   (zero idle cost) or folded into an rAF-throttled scroll pass, and animates
+   transform/opacity or a single small background-position.
+   ========================================================================== */
+
+/* --- 1. specular sweep on solid buttons ----------------------------------
+   A narrow highlight travels the gold on hover, so buttons read as the same
+   foil the gold text already does. Painted as a second background layer
+   rather than a pseudo-element: ::after is taken by the existing cream fill,
+   and this way the sweep sits under that fill and under the label instead of
+   fighting either for stacking order.
+   At rest the layer is parked off the right edge, so the button is pixel-for-
+   pixel what it was before. --gold-grad stays the base layer, untouched. */
+.btn:not(.btn--ghost) {
+  background-image:
+    linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, .40) 48%, transparent 54%),
+    var(--gold-grad);
+  background-repeat: no-repeat;
+  background-size: 240% 100%, 100% 100%;
+  background-position: 155% 0, 0 0;
+}
+/* The transition lives on :hover only, so the band sweeps in and then snaps
+   back off-canvas invisibly rather than sweeping backwards on mouse-out. */
+.btn:not(.btn--ghost):hover,
+.btn:not(.btn--ghost):focus-visible {
+  background-position: -75% 0, 0 0;
+  transition: transform .5s var(--ease),
+              box-shadow .5s var(--ease),
+              background-position .9s var(--ease);
+}
+
+/* --- 2. ambient cursor spotlight -----------------------------------------
+   Pointer light already existed inside portfolio cards; this extends the same
+   idea to the dark sections so the site has one lighting model rather than a
+   local trick. The glow is a fixed-size child moved by transform only — no
+   repaint of the section, and it composites on the GPU.
+   Elements are created by main.js, so no page markup changed. */
+.section > .wrap { position: relative; z-index: 1; }  /* out of flow already; no visual change */
+
+.spot {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .55s var(--ease);
+}
+.spot.is-on { opacity: 1; }
+.spot i {
+  position: absolute;
+  left: 0; top: 0;
+  width: 760px; height: 760px;
+  margin: -380px 0 0 -380px;
+  background: radial-gradient(circle,
+              rgba(201, 169, 97, .115),
+              rgba(201, 169, 97, .045) 38%,
+              transparent 66%);
+  will-change: transform;
+}
+
+/* --- 3. pointer-tracked border highlight on cards ------------------------
+   A gold segment of the border lights where the cursor is. Uses the existing
+   hairline vocabulary rather than introducing a new one, and leaves the
+   existing lift and ::before wash exactly as they were.
+   Guarded by @supports: without mask-composite the radial would flood the
+   whole card instead of masking to its edge, so unsupported browsers get
+   nothing rather than something wrong. */
+@supports ((-webkit-mask-composite: xor) or (mask-composite: exclude)) {
+  .card, .post { --cx: 50%; --cy: 50%; }
+  .card::after, .post::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    padding: 1px;
+    background: radial-gradient(190px circle at var(--cx) var(--cy),
+                rgba(232, 206, 142, .85),
+                rgba(201, 169, 97, .22) 42%,
+                transparent 64%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    opacity: 0;
+    transition: opacity .45s var(--ease);
+    pointer-events: none;
+  }
+  .card:hover::after, .post:hover::after { opacity: 1; }
+}
+
+/* --- 4. form field focus ---------------------------------------------------
+   Contact is the conversion page and had the least going on: fields changed
+   border colour and nothing else. A rule draws under the focused field — the
+   same draw-in idiom as the stat rules and the accordion thread — plus a
+   little inset warmth. Additive to the existing focus styles, and an inset
+   shadow rather than a ring so it cannot be mistaken for the focus outline. */
+.field { position: relative; }
+.field::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: var(--gold-grad);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .55s var(--ease);
+  pointer-events: none;
+}
+.field:focus-within::after { transform: scaleX(1); }
+.field input:focus,
+.field select:focus,
+.field textarea:focus { box-shadow: inset 0 0 26px -16px var(--gold); }
+
+/* --- 5. parallax on the decorative backdrops -----------------------------
+   Positions are written by main.js. Declared here only so the intent is
+   findable from the stylesheet. .deco--topo is centred with the `translate`
+   property, which composes with `transform` rather than being overwritten by
+   it — that is why the JS sets transform and not translate. */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Drop the specular band entirely — with transitions disabled it would
+     otherwise jump into place as a flash. */
+  .btn:not(.btn--ghost) { background-image: var(--gold-grad); }
+  .spot { display: none; }
+  .card::after, .post::after { display: none; }
+  .field::after { transition: none; }
+}
+
 /* --- no-JS fallback ------------------------------------------------------
    Nothing may depend on JS to become visible. If main.js never runs, the
    preloader must not exist and every animated-in element starts settled. */

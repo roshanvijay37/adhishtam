@@ -863,4 +863,145 @@
     });
   })();
 
+  /* ======================================================================
+     ENHANCEMENT LAYER — added alongside the modules above, none replaced.
+     No new always-on loop: each of these idles at zero cost and only runs
+     while the pointer is actually over the element, or on a scroll frame
+     that was already going to happen.
+     ====================================================================== */
+
+  /* ------------------------------------------------- ambient spotlight
+     A soft gold glow lags the cursor across the dark sections. The glow is
+     a fixed-size child moved with translate3d, so nothing repaints — the
+     section is untouched and the compositor does the work.
+     The rAF starts on pointer entry and stops once the easing has settled
+     after the pointer leaves, so an idle page runs no frames at all. */
+  (function () {
+    if (reduced || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+    // Dark sections only. The hero, page headers and CTA are deliberately
+    // excluded — they already carry their own light and don't need more.
+    var sections = $$('main .section:not(.section--cream), .footer');
+    if (!sections.length) return;
+
+    sections.forEach(function (sec) {
+      var spot = document.createElement('div');
+      spot.className = 'spot';
+      spot.setAttribute('aria-hidden', 'true');
+      var dot = document.createElement('i');
+      spot.appendChild(dot);
+      // First child: absolutely positioned, so it takes no part in layout.
+      sec.insertBefore(spot, sec.firstChild);
+
+      var tx = 0, ty = 0, cx = 0, cy = 0, running = false, inside = false;
+
+      function place() {
+        dot.style.transform = 'translate3d(' + cx.toFixed(1) + 'px,' + cy.toFixed(1) + 'px,0)';
+      }
+
+      function loop() {
+        if (!running) return;
+        cx += (tx - cx) * 0.12;
+        cy += (ty - cy) * 0.12;
+        place();
+        // settled and the pointer has gone: stop burning frames
+        if (!inside && Math.abs(tx - cx) < 0.6 && Math.abs(ty - cy) < 0.6) {
+          running = false;
+          return;
+        }
+        requestAnimationFrame(loop);
+      }
+
+      function start() { if (!running) { running = true; requestAnimationFrame(loop); } }
+
+      sec.addEventListener('pointerenter', function (e) {
+        var r = sec.getBoundingClientRect();
+        inside = true;
+        tx = cx = e.clientX - r.left;
+        ty = cy = e.clientY - r.top;
+        place();                       // jump to the entry point, then ease
+        spot.classList.add('is-on');
+        start();
+      });
+
+      sec.addEventListener('pointermove', function (e) {
+        var r = sec.getBoundingClientRect();
+        tx = e.clientX - r.left;
+        ty = e.clientY - r.top;
+        start();
+      }, { passive: true });
+
+      sec.addEventListener('pointerleave', function () {
+        inside = false;
+        spot.classList.remove('is-on');
+      });
+    });
+  })();
+
+  /* --------------------------------------------- card border highlight
+     Feeds --cx/--cy to the masked ::after declared in the stylesheet, so a
+     segment of the card's border lights where the cursor is. Without JS the
+     properties keep their 50% defaults and the glow simply centres. */
+  (function () {
+    if (reduced || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    $$('.card, .post').forEach(function (el) {
+      el.addEventListener('pointermove', function (e) {
+        var r = el.getBoundingClientRect();
+        el.style.setProperty('--cx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
+        el.style.setProperty('--cy', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
+      }, { passive: true });
+    });
+  })();
+
+  /* ------------------------------------------------- backdrop parallax
+     The decorative SVGs animate internally but sat flat against the content
+     plane. Drifting them against the scroll gives the layers real depth.
+     Only elements currently in view are touched, and the work happens on a
+     scroll frame that was already scheduled.
+     transform is used rather than translate because .deco--topo is centred
+     with the `translate` property — the two compose, so writing transform
+     leaves the centring intact. */
+  (function () {
+    if (reduced) return;
+    var layers = $$('.deco, .footer__mark');
+    if (!layers.length) return;
+
+    var active = [];
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          var i = active.indexOf(en.target);
+          if (en.isIntersecting && i === -1) active.push(en.target);
+          else if (!en.isIntersecting && i !== -1) active.splice(i, 1);
+        });
+      }, { rootMargin: '25% 0px 25% 0px' });
+      layers.forEach(function (l) { io.observe(l); });
+    } else {
+      active = layers.slice();
+    }
+
+    var queued = false;
+    function update() {
+      queued = false;
+      var vh = window.innerHeight || 1;
+      for (var i = 0; i < active.length; i++) {
+        var el = active[i];
+        var r = el.getBoundingClientRect();
+        // -1 well above the viewport, 0 centred, +1 well below
+        var p = ((r.top + r.height / 2) - vh / 2) / vh;
+        if (p < -1.6 || p > 1.6) continue;
+        var range = el.classList.contains('footer__mark') ? 24 : 46;
+        el.style.transform = 'translate3d(0,' + (p * range).toFixed(1) + 'px,0)';
+      }
+    }
+
+    window.addEventListener('scroll', function () {
+      if (!queued) { queued = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    window.addEventListener('resize', function () {
+      if (!queued) { queued = true; requestAnimationFrame(update); }
+    });
+    update();
+  })();
+
 })();
