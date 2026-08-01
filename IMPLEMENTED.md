@@ -126,6 +126,26 @@ with a 9-second hard ceiling; counters; magnetic buttons; custom cursor;
 scroll-velocity marquee that surges, drags and reverses with the wheel; rules
 drawing in under the hero stats.
 
+### Enhancement layer
+
+Added on top of the above; nothing was replaced. Purely additive — no copy,
+layout, spacing, type or palette change, and no page markup touched. Each is
+pointer-driven (zero idle cost) or folded into a scroll frame that was already
+scheduled, so no new always-on animation was introduced.
+
+| | |
+|---|---|
+| **Specular sweep on buttons** | A narrow highlight travels the gold on hover, so buttons read as the same foil as the gold text. Painted as a second background layer — `::after` is taken by the cream fill — parked off-canvas at rest so buttons are pixel-identical when idle. The transition sits on `:hover` only, so it sweeps in and snaps back invisibly instead of sweeping backwards. |
+| **Ambient spotlight** | A soft gold glow lags the cursor across the dark sections, extending the portfolio-card pointer light into one lighting model. A fixed-size child moved by `translate3d`, so nothing repaints. Its rAF starts on pointer entry and stops once the easing settles, so an idle page runs no frames. Hero, page headers and the CTA are excluded — they already carry their own light. |
+| **Card border highlight** | A gold segment of the border lights where the cursor is, on `.card` and `.post`. Guarded by `@supports` for `mask-composite`: without it the radial would flood the card instead of masking to its edge, so unsupported browsers get nothing rather than something wrong. |
+| **Form field focus** | A rule draws under the focused field, plus inset warmth. An inset shadow rather than a ring, so it can't be confused with the focus outline. |
+| **Backdrop parallax** | The decorative SVGs drift against the scroll so they sit behind the content plane. Only in-view layers are touched. Uses `transform`, not `translate`, because `.deco--topo` is centred with the `translate` property and the two compose. |
+
+Cost: **+3 KB CSS, +2 KB JS** gzipped. All five are gated on
+`hover:hover`/`pointer:fine` where pointer-driven, degrade to nothing without
+JS, and are switched off under `prefers-reduced-motion` — the specular band is
+removed outright there, since with transitions disabled it would land as a flash.
+
 ---
 
 ## Content
@@ -192,7 +212,7 @@ No amount of further design work substitutes for these.
 
 | | |
 |---|---|
-| Critical path | ~99 KB (HTML + CSS + JS + 2 fonts) |
+| Critical path | ~102 KB (HTML + CSS + JS + 2 fonts) |
 | Page HTML, gzipped | 2–5 KB each |
 | Motion assets | 18 KB gzipped, all but one lazy-loaded |
 | Images | 1.3 MB total, re-encoded down from 25 MB of source |
