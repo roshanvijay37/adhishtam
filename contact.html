@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact Us — Adhishtam Digital Solutions</title>
+<meta name="description" content="Talk to Adhishtam Digital Solutions — 2nd Floor, Rishika Towers, Jain Pete, Moodbidri, Mangalore. Email adhishtamofficial@gmail.com or message us on WhatsApp.">
+<meta name="theme-color" content="#061710">
+<link rel="canonical" href="https://adhishtam.com/contact.html">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/img/logo-full.png">
+
+<!-- Social scrapers do not resolve relative URLs — these must stay absolute. -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://adhishtam.com/contact.html">
+<meta property="og:site_name" content="Adhishtam Digital Solutions">
+<meta property="og:title" content="Contact Us — Adhishtam Digital Solutions">
+<meta property="og:description" content="Talk to Adhishtam Digital Solutions — 2nd Floor, Rishika Towers, Jain Pete, Moodbidri, Mangalore. Email adhishtamofficial@gmail.com or message us on WhatsApp.">
+<meta property="og:image" content="https://adhishtam.com/assets/img/logo-full.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- Fonts are self-hosted: no third-party connection to negotiate on a phone,
+     and no render-blocking stylesheet on someone else's server. -->
+<link rel="preload" href="assets/fonts/sora-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/style.css">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="cursor" id="cursor" aria-hidden="true"><span class="cursor__label">View</span></div>
+<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<!-- nav -->
+<header class="nav" id="nav">
+  <div class="nav__inner">
+    <a class="nav__logo" href="index.html" aria-label="Adhishtam Digital Solutions — home">
+      <img src="assets/img/logo-full-cream.png" alt="Adhishtam Digital Solutions" width="1000" height="572">
+    </a>
+    <nav class="nav__links" aria-label="Primary">
+      <a class="nav__link" href="index.html"><span class="swap"><b data-txt="Home">Home</b></span></a>
+      <a class="nav__link" href="about.html"><span class="swap"><b data-txt="About Us">About Us</b></span></a>
+      <a class="nav__link" href="services.html"><span class="swap"><b data-txt="Services">Services</b></span></a>
+      <a class="nav__link" href="portfolio.html"><span class="swap"><b data-txt="Portfolio">Portfolio</b></span></a>
+      <a class="nav__link" href="blog.html"><span class="swap"><b data-txt="Blog">Blog</b></span></a>
+      <a class="nav__link is-active" href="contact.html" aria-current="page"><span class="swap"><b data-txt="Contact Us">Contact Us</b></span></a>
+    </nav>
+    <a class="btn nav__cta" href="contact.html" data-magnet>
+      Start a project
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+    </a>
+    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- mobile menu -->
+<div class="menu" id="menu">
+  <nav class="menu__links" aria-label="Mobile">
+    <a href="index.html">Home</a>
+    <a href="about.html">About Us</a>
+    <a href="services.html">Services</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="blog.html">Blog</a>
+    <a href="contact.html">Contact Us</a>
+  </nav>
+  <div class="menu__foot">
+    <a href="mailto:adhishtamofficial@gmail.com">adhishtamofficial@gmail.com</a>
+    <a href="tel:+918762700493">+91 87627 00493</a>
+    <span>Rishika Towers, Jain Pete, Moodbidri</span>
+  </div>
+</div>
+
+<main>
+
+<section class="page-hero has-deco">
+  <img class="deco deco--hex" src="assets/anim/hex-drift.svg" alt="" aria-hidden="true" width="600" height="600">
+  <div class="hero__glow" aria-hidden="true"></div>
+  <div class="wrap" style="position:relative;z-index:2">
+    <span class="eyebrow">Contact us</span>
+    <h1 class="h2 rv-mask is-in" style="margin-block:1.2rem 1.4rem">Tell us what<br>you&rsquo;re building</h1>
+    <p class="lede" style="color:var(--cream-dim)">A few lines about the business and the goal is enough to start. We reply the same day.</p>
+  </div>
+</section>
+
+<!-- contact -->
+<section class="section" id="contact">
+  <div class="wrap">
+        <div class="contact__grid">
+      <form class="rv" id="contactForm" novalidate>
+        <div class="field">
+          <label for="cf-name">Your name</label>
+          <input id="cf-name" name="name" type="text" placeholder="Full name" required autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="cf-email">Email</label>
+          <input id="cf-email" name="email" type="email" placeholder="you@company.com" required autocomplete="email">
+        </div>
+        <div class="field">
+          <label for="cf-phone">Phone / WhatsApp</label>
+          <input id="cf-phone" name="phone" type="tel" placeholder="+91" autocomplete="tel">
+        </div>
+        <div class="field">
+          <label for="cf-service">What do you need?</label>
+          <select id="cf-service" name="service">
+            <option>Brand strategy &amp; identity</option>
+            <option>Graphic design</option>
+            <option>Web design &amp; development</option>
+            <option>Digital marketing &amp; ads</option>
+            <option>Social media management</option>
+            <option>Video &amp; motion</option>
+            <option>Photography</option>
+            <option>Print &amp; production</option>
+            <option>Strategy, consulting &amp; PR</option>
+            <option>Not sure yet — advise me</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="cf-msg">Project details</label>
+          <textarea id="cf-msg" name="message" placeholder="A few lines about the business, the goal and the timeline."></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn" type="submit" data-magnet>Send enquiry
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          </button>
+          <button class="btn btn--ghost" type="button" id="waSend" data-magnet>Send on WhatsApp</button>
+        </div>
+        <p class="form-note" id="formNote">Opens your email app with the details filled in — nothing is stored on this site.</p>
+      </form>
+
+      <div class="info rv rv-1">
+        <div class="info__row">
+          <span class="info__k">Studio</span>
+          <span class="info__v">2nd Floor, Rishika Towers,<br>Jain Pete, Moodbidri,<br>Mangalore, Karnataka</span>
+          <a class="tlink" style="margin-top:.6rem" href="https://www.google.com/maps/search/?api=1&query=Rishika+Towers+Jain+Pete+Moodbidri" target="_blank" rel="noopener">Open in maps</a>
+        </div>
+        <div class="info__row">
+          <span class="info__k">Email</span>
+          <span class="info__v"><a href="mailto:adhishtamofficial@gmail.com">adhishtamofficial@gmail.com</a></span>
+        </div>
+        <div class="info__row">
+          <span class="info__k">Phone</span>
+          <span class="info__v"><a href="tel:+918762700493">+91 87627 00493</a></span>
+        </div>
+        <div class="info__row">
+          <span class="info__k">WhatsApp</span>
+          <span class="info__v"><a href="https://wa.me/917618791635" target="_blank" rel="noopener">+91 76187 91635</a></span>
+        </div>
+        <div class="info__row">
+          <span class="info__k">Follow</span>
+          <div class="socials" style="margin-top:.5rem">
+            <a class="social" href="https://www.instagram.com/adhishtam.in/" target="_blank" rel="noopener" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none"/></svg>
+            </a>
+            <a class="social" href="https://www.facebook.com/profile.php?id=61591396898763" target="_blank" rel="noopener" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h3V5.5h-3c-2.2 0-4 1.8-4 4V12H7.5v3.5H10V22h3.5v-6.5H16L16.5 12H13.5V9.5c0-.3.2-.5.5-.5z"/></svg>
+            </a>
+            <a class="social" href="https://www.youtube.com/@AdhishtamDigitalSolutions" target="_blank" rel="noopener" aria-label="YouTube">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.5 7.4a2.7 2.7 0 0 0-1.9-1.9C18.9 5 12 5 12 5s-6.9 0-8.6.5A2.7 2.7 0 0 0 1.5 7.4 28 28 0 0 0 1 12a28 28 0 0 0 .5 4.6 2.7 2.7 0 0 0 1.9 1.9C5.1 19 12 19 12 19s6.9 0 8.6-.5a2.7 2.7 0 0 0 1.9-1.9A28 28 0 0 0 23 12a28 28 0 0 0-.5-4.6zM9.8 15.2V8.8l5.6 3.2z"/></svg>
+            </a>
+            <a class="social" href="https://wa.me/917618791635" target="_blank" rel="noopener" aria-label="WhatsApp">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm5.8 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1a12 12 0 0 1-6.4-5.6C6.9 10.8 6.6 9.8 6.6 9c0-.9.4-1.6.8-2 .2-.2.4-.3.6-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2 0 .4-.1.6l-.4.5c-.1.2-.3.3-.1.6a9 9 0 0 0 4 3.4c.3.1.5.1.7-.1l.8-1c.2-.2.3-.2.6-.1l1.8.9c.3.1.5.2.5.4z"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <img class="footer__mark" src="assets/anim/mark-orbit.svg" alt="" aria-hidden="true" loading="lazy" width="100" height="100">
+  <div class="wrap footer__top">
+    <div>
+      <div class="footer__logo"><img src="assets/img/logo-full-cream.png" alt="Adhishtam Digital Solutions" width="1000" height="572" loading="lazy"></div>
+      <p class="footer__tag">A creative and digital marketing agency in Moodbidri, Mangalore. We create, market and grow brands — every discipline in-house.</p>
+    </div>
+    <div>
+      <h4>Explore</h4>
+      <ul class="footer__list">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Get in touch</h4>
+      <ul class="footer__list">
+        <li><a href="mailto:adhishtamofficial@gmail.com">adhishtamofficial@gmail.com</a></li>
+        <li><a href="tel:+918762700493">+91 87627 00493</a></li>
+        <li><a href="https://wa.me/917618791635" target="_blank" rel="noopener">WhatsApp +91 76187 91635</a></li>
+        <li>Rishika Towers, Jain Pete,<br>Moodbidri, Mangalore</li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap footer__bar">
+    <span>© <span id="yr">2026</span> Adhishtam Digital Solutions. All rights reserved.</span>
+    <span>We create. Market. Grow.</span>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

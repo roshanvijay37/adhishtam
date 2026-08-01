@@ -32,7 +32,8 @@ jobs:
           mkdir -p _site
 
           # Everything the website actually needs, and nothing else.
-          cp index.html blog.html 404.html robots.txt sitemap.xml _site/
+          cp index.html about.html services.html portfolio.html blog.html contact.html _site/
+          cp 404.html robots.txt sitemap.xml _site/
           cp -r assets _site/
 
           # Docs live next to the things they document (assets/anim/README.md),
@@ -51,6 +52,35 @@ jobs:
           else
             echo "No CNAME — publishing to the github.io URL."
           fi
+
+      - name: Fail if the shared header or footer has drifted
+        run: |
+          set -euo pipefail
+          # Six standalone pages means six copies of the nav and footer. There
+          # is no template engine to keep them in sync, so this does it: edit
+          # one and forget the rest, and the build stops instead of shipping a
+          # site whose menu changes depending on which page you are on.
+          fail=0
+          for part in nav footer; do
+            ref=""; refpage=""
+            for f in index about services portfolio blog contact; do
+              case "$part" in
+                nav)    sed -n '/<nav class="nav__links"/,/<\/nav>/p' "$f.html" > /tmp/blk ;;
+                footer) sed -n '/<footer class="footer">/,/<\/footer>/p' "$f.html" > /tmp/blk ;;
+              esac
+              [ -s /tmp/blk ] || { echo "::error::$part block not found in $f.html"; fail=1; continue; }
+              # the current-page markers are supposed to differ
+              sed -i 's/ is-active//g; s/ aria-current="page"//g' /tmp/blk
+              sum=$(sha1sum /tmp/blk | cut -d' ' -f1)
+              if [ -z "$ref" ]; then ref="$sum"; refpage="$f"
+              elif [ "$sum" != "$ref" ]; then
+                echo "::error::$part in $f.html has drifted from $refpage.html"
+                fail=1
+              fi
+            done
+          done
+          [ "$fail" -eq 0 ] || exit 1
+          echo "Header and footer are identical across all six pages."
 
       - name: Fail if source material leaked into the artifact
         run: |

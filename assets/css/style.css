@@ -56,6 +56,26 @@
 }
 @media (min-width: 1024px) { :root { --nav-h: 86px; } }
 
+/* --- cross-document page transitions -------------------------------------
+   Now that this is six real pages, navigation gets a transition. Two lines of
+   CSS, no JavaScript, no interception of clicks — browsers without support
+   simply navigate normally, and nothing can leave a visitor stranded behind a
+   stuck overlay the way a hand-rolled curtain can. */
+@view-transition { navigation: auto; }
+
+::view-transition-old(root) { animation: vt-out .26s var(--ease-io) both; }
+::view-transition-new(root) { animation: vt-in .34s var(--ease) both; }
+@keyframes vt-out { to   { opacity: 0; transform: translateY(-12px); } }
+@keyframes vt-in  { from { opacity: 0; transform: translateY(16px); } }
+
+/* The header is common to every page, so hold it still while the body swaps. */
+.nav { view-transition-name: site-nav; }
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) { animation: none; }
+}
+
 /* --- reset -------------------------------------------------------------- */
 *, *::before, *::after { box-sizing: border-box; }
 * { margin: 0; padding: 0; }
