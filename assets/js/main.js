@@ -434,6 +434,100 @@
     });
   })();
 
+  /* ----------------------------------------------------- blur-up loading */
+  (function () {
+    $$('.work__item img').forEach(function (img) {
+      if (img.complete && img.naturalWidth) { img.classList.add('is-loaded'); return; }
+      img.addEventListener('load', function () { img.classList.add('is-loaded'); });
+      // a broken image should not sit invisible on top of its placeholder
+      img.addEventListener('error', function () { img.classList.add('is-loaded'); });
+    });
+  })();
+
+  /* -------------------------------------------------------------- lightbox
+     Cards advertise VIEW; this delivers it. Progressive by design — with no
+     JS the grid is still a perfectly good grid, just not clickable. */
+  (function () {
+    var box = $('#lightbox');
+    if (!box) return;
+    var imgEl = $('#lbImg'), titleEl = $('#lbTitle'), catEl = $('#lbCat');
+    var items = $$('.work__item');
+    if (!items.length) return;
+
+    var idx = -1, lastFocus = null;
+
+    items.forEach(function (it, i) {
+      it.setAttribute('role', 'button');
+      it.setAttribute('tabindex', '0');
+      var t = $('.work__title', it);
+      it.setAttribute('aria-label', 'View ' + (t ? t.textContent.trim() : 'project'));
+      it.addEventListener('click', function () { open(i); });
+      it.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(i); }
+      });
+    });
+
+    // only step through what the current filter is showing
+    function visible() {
+      return items.filter(function (it) { return !it.classList.contains('is-hidden'); });
+    }
+
+    function show(it) {
+      var img = $('img', it);
+      var t = $('.work__title', it);
+      var c = $('.work__cat', it);
+      if (!img) return;
+      imgEl.src = img.currentSrc || img.src;
+      imgEl.alt = img.alt || '';
+      titleEl.textContent = t ? t.textContent.trim() : '';
+      catEl.textContent = c ? c.textContent.trim() : '';
+    }
+
+    function open(i) {
+      idx = i;
+      show(items[i]);
+      lastFocus = document.activeElement;
+      box.classList.add('is-open');
+      document.documentElement.classList.add('is-loading'); // reuse the scroll lock
+      $('#lbClose').focus();
+    }
+
+    function close() {
+      box.classList.remove('is-open');
+      document.documentElement.classList.remove('is-loading');
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+
+    function step(dir) {
+      var vis = visible();
+      if (vis.length < 2) return;
+      var at = vis.indexOf(items[idx]);
+      if (at === -1) at = 0;
+      var next = vis[(at + dir + vis.length) % vis.length];
+      idx = items.indexOf(next);
+      show(next);
+    }
+
+    $('#lbClose').addEventListener('click', close);
+    $('#lbPrev').addEventListener('click', function () { step(-1); });
+    $('#lbNext').addEventListener('click', function () { step(1); });
+    box.addEventListener('click', function (e) { if (e.target === box) close(); });
+
+    document.addEventListener('keydown', function (e) {
+      if (!box.classList.contains('is-open')) return;
+      if (e.key === 'Escape') close();
+      else if (e.key === 'ArrowLeft') step(-1);
+      else if (e.key === 'ArrowRight') step(1);
+      else if (e.key === 'Tab') {
+        // keep focus inside the dialog while it is modal
+        var f = $$('button', box);
+        var first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+  })();
+
   /* --------------------------------------------------------------- forms */
   (function () {
     var form = $('#contactForm');

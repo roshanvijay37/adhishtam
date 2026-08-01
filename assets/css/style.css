@@ -291,6 +291,103 @@ h1, h2, h3, h4 {
 }
 .tlink:hover::after { transform-origin: left; transform: scaleX(1); }
 
+/* --- skip link -----------------------------------------------------------
+   First thing in the tab order. Keyboard users otherwise wade through the
+   whole nav on every one of the six pages. */
+.skip {
+  position: fixed;
+  top: -120px; left: 1rem;
+  z-index: 9600;
+  padding: .95rem 1.5rem;
+  background: var(--gold);
+  color: var(--ink);
+  border-radius: 0 0 4px 4px;
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  transition: top .3s var(--ease);
+}
+.skip:focus { top: 0; }
+
+/* --- blur-up images ------------------------------------------------------
+   Each card carries a ~20px JPEG of itself as a base64 custom property. It
+   paints instantly, scaled up and therefore soft, and the real photograph
+   fades over it once decoded. Stops the grid flashing empty green rectangles
+   on a slow connection, which is most of the audience. */
+.work__item { background-image: var(--lqip); background-size: cover; background-position: center; }
+.work__item img { opacity: 0; transition: opacity .8s var(--ease); }
+.work__item img.is-loaded { opacity: 1; }
+html:not(.js) .work__item img { opacity: 1; }
+
+/* --- lightbox ------------------------------------------------------------
+   The cursor promises VIEW over a card; this is what delivers it. */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9400;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  background: rgba(6, 23, 16, .94);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .4s var(--ease), visibility .4s;
+}
+.lightbox.is-open { opacity: 1; visibility: visible; }
+.lightbox figure {
+  display: grid;
+  gap: 1rem;
+  justify-items: center;
+  max-width: min(1100px, 100%);
+  transform: scale(.96);
+  transition: transform .5s var(--ease);
+}
+.lightbox.is-open figure { transform: none; }
+.lightbox img {
+  max-width: 100%;
+  max-height: 74svh;
+  width: auto;
+  object-fit: contain;
+  border-radius: 3px;
+}
+.lightbox figcaption {
+  display: grid;
+  gap: .3rem;
+  text-align: center;
+  font-size: .9rem;
+  color: var(--cream-dim);
+}
+.lightbox figcaption b {
+  font-family: var(--ff-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--cream);
+}
+.lb-btn {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 52px; height: 52px;
+  border: 1px solid var(--hair);
+  border-radius: 50%;
+  color: var(--cream);
+  background: rgba(6, 23, 16, .6);
+  transition: background-color .35s, border-color .35s, color .35s, transform .35s var(--ease);
+}
+.lb-btn:hover { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+.lb-btn svg { width: 20px; height: 20px; }
+.lb-close { top: clamp(1rem, 3vw, 2rem); right: clamp(1rem, 3vw, 2rem); }
+.lb-prev { left: clamp(.6rem, 2.5vw, 2rem); top: 50%; margin-top: -26px; }
+.lb-next { right: clamp(.6rem, 2.5vw, 2rem); top: 50%; margin-top: -26px; }
+@media (max-width: 620px) {
+  .lb-prev { left: 50%; margin-left: -66px; top: auto; bottom: 1rem; margin-top: 0; }
+  .lb-next { right: 50%; margin-right: -66px; top: auto; bottom: 1rem; margin-top: 0; }
+  .lightbox img { max-height: 60svh; }
+}
+
 /* --- cursor ------------------------------------------------------------- */
 .cursor, .cursor-dot {
   position: fixed;
