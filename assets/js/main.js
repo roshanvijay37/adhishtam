@@ -94,11 +94,83 @@
 
     var hot = 'a, button, .work__item, input, select, textarea, .filter';
     document.addEventListener('mouseover', function (e) {
-      if (e.target.closest && e.target.closest(hot)) ring.classList.add('is-big');
+      if (!e.target.closest) return;
+      if (e.target.closest('.work__item')) ring.classList.add('is-view');
+      else if (e.target.closest(hot)) ring.classList.add('is-big');
     });
     document.addEventListener('mouseout', function (e) {
-      if (e.target.closest && e.target.closest(hot)) ring.classList.remove('is-big');
+      if (!e.target.closest) return;
+      if (e.target.closest('.work__item')) ring.classList.remove('is-view');
+      else if (e.target.closest(hot)) ring.classList.remove('is-big');
     });
+  })();
+
+  /* ------------------------------------------------- word-by-word reveal
+     Words light as the paragraph travels through the viewport, instead of the
+     whole block fading in one go. Only words that actually cross the
+     threshold get touched on a given frame, so this stays cheap. */
+  (function () {
+    var hosts = $$('[data-words]');
+    if (!hosts.length) return;
+
+    var groups = [];
+
+    hosts.forEach(function (host) {
+      $$('p', host).forEach(function (p) {
+        var words = p.textContent.split(/\s+/).filter(Boolean);
+        p.textContent = '';
+        var spans = words.map(function (w, i) {
+          var s = document.createElement('span');
+          s.textContent = w + (i < words.length - 1 ? ' ' : '');
+          p.appendChild(s);
+          return s;
+        });
+        groups.push({ el: p, spans: spans, lit: 0 });
+      });
+      host.classList.add('rvw');
+    });
+
+    if (reduced) {
+      groups.forEach(function (g) { g.spans.forEach(function (s) { s.classList.add('on'); }); });
+      return;
+    }
+
+    var visible = [];
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          var g = groups.filter(function (x) { return x.el === en.target; })[0];
+          if (!g) return;
+          var at = visible.indexOf(g);
+          if (en.isIntersecting && at === -1) visible.push(g);
+          else if (!en.isIntersecting && at !== -1) visible.splice(at, 1);
+        });
+      }, { rootMargin: '10% 0px 10% 0px' });
+      groups.forEach(function (g) { io.observe(g.el); });
+    } else {
+      visible = groups.slice();
+    }
+
+    var queued = false;
+    function update() {
+      queued = false;
+      var vh = window.innerHeight;
+      for (var i = 0; i < visible.length; i++) {
+        var g = visible[i];
+        var r = g.el.getBoundingClientRect();
+        // 0 when the block's top hits 82% of the viewport, 1 when it clears 28%
+        var p = (vh * 0.82 - r.top) / Math.max(1, (vh * 0.54 + r.height * 0.55));
+        p = Math.max(0, Math.min(1, p));
+        var want = Math.round(p * g.spans.length);
+        while (g.lit < want) { g.spans[g.lit].classList.add('on'); g.lit++; }
+        while (g.lit > want) { g.lit--; g.spans[g.lit].classList.remove('on'); }
+      }
+    }
+    window.addEventListener('scroll', function () {
+      if (!queued) { queued = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    window.addEventListener('resize', update);
+    update();
   })();
 
   /* ------------------------------------------------------------ magnetic */
@@ -297,6 +369,17 @@
         btns.forEach(function (b) { b.classList.remove('is-active'); });
         btn.classList.add('is-active');
 
+        // FLIP: measure, mutate, then play the difference. Cards glide to
+        // their new grid slots rather than teleporting.
+        var wasVisible = [], first = [];
+        if (!reduced) {
+          items.forEach(function (it) {
+            var vis = !it.classList.contains('is-hidden');
+            wasVisible.push(vis);
+            first.push(vis ? it.getBoundingClientRect() : null);
+          });
+        }
+
         var shown = 0;
         items.forEach(function (it) {
           var cats = (it.getAttribute('data-cat') || '').split(/\s+/);
@@ -305,6 +388,33 @@
           if (show) shown++;
         });
         if (empty) empty.classList.toggle('is-on', shown === 0);
+        if (reduced) return;
+
+        items.forEach(function (it, i) {
+          if (it.classList.contains('is-hidden')) return;
+          var last = it.getBoundingClientRect();
+
+          if (!wasVisible[i]) {
+            // newly shown — no previous position to travel from, so fade up
+            it.style.transition = 'none';
+            it.style.opacity = '0';
+            it.style.transform = 'scale(.94)';
+          } else {
+            var dx = first[i].left - last.left;
+            var dy = first[i].top - last.top;
+            if (!dx && !dy) return;
+            it.style.transition = 'none';
+            it.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+          }
+
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              it.style.transition = '';
+              it.style.transform = '';
+              it.style.opacity = '';
+            });
+          });
+        });
       });
     });
   })();
@@ -378,6 +488,80 @@
     }
   })();
 
+  /* -------------------------------------------------- scroll-driven marquee
+     The ticker takes its speed from the scroll wheel: it surges when you
+     scroll down, drags and can run backwards when you scroll up, then settles
+     to a drift. CSS keeps the plain animation as the fallback. */
+  (function () {
+    var mq = $('.marquee');
+    if (!mq || reduced) return;
+    var tracks = $$('.marquee__track', mq);
+    if (tracks.length < 2) return;
+
+    tracks.forEach(function (t) { t.style.animation = 'none'; });
+
+    var x = 0, vel = 0, w = 0, lastY = window.scrollY, running = false;
+
+    function measure() { w = tracks[0].getBoundingClientRect().width || 1; }
+    measure();
+    window.addEventListener('resize', measure);
+
+    window.addEventListener('scroll', function () {
+      var y = window.scrollY;
+      vel += (y - lastY) * 0.28;
+      vel = Math.max(-38, Math.min(38, vel));
+      lastY = y;
+    }, { passive: true });
+
+    function frame() {
+      if (!running) return;
+      vel *= 0.91;                       // settle back to the base drift
+      x -= (0.6 + vel);
+      if (w > 0) { x = x % w; if (x > 0) x -= w; }
+      var t = 'translate3d(' + x.toFixed(2) + 'px,0,0)';
+      tracks[0].style.transform = t;
+      tracks[1].style.transform = t;
+      requestAnimationFrame(frame);
+    }
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (en) {
+        if (en[0].isIntersecting) {
+          if (!running) { running = true; measure(); requestAnimationFrame(frame); }
+        } else { running = false; }
+      }, { threshold: 0 }).observe(mq);
+    } else {
+      running = true; requestAnimationFrame(frame);
+    }
+  })();
+
+  /* -------------------------------------------------------- hero parallax
+     Hero content drifts up and dims as it leaves, so the marquee below feels
+     like it slides over the top rather than the page just scrolling. */
+  (function () {
+    var hero = $('.hero');
+    if (!hero || reduced) return;
+    var inner = $('.hero__inner', hero);
+    var cue = $('.scroll-cue', hero);
+    if (!inner) return;
+
+    var queued = false;
+    function update() {
+      queued = false;
+      var y = window.scrollY;
+      var h = hero.offsetHeight || 1;
+      if (y > h) return;
+      var p = Math.min(1, y / h);
+      inner.style.transform = 'translate3d(0,' + (p * 74).toFixed(1) + 'px,0)';
+      inner.style.opacity = (1 - p * 1.25).toFixed(3);
+      if (cue) cue.style.opacity = (1 - p * 4).toFixed(3);
+    }
+    window.addEventListener('scroll', function () {
+      if (!queued) { queued = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    update();
+  })();
+
   /* ---------------------------------------------------------- hex canvas */
   (function () {
     var cv = $('#hex');
@@ -386,7 +570,7 @@
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
     var W = 0, H = 0, R = 34, cells = [], base = null;
     var px = -9999, py = -9999, hasMouse = false, t = 0, running = false;
-    var motes = [];
+    var motes = [], ripples = [];
 
     function hexPath(c, x, y, r) {
       c.beginPath();
@@ -470,15 +654,58 @@
         ctx.stroke();
       }
 
+      // Ripples: a wave of light travelling outward from wherever you tapped.
+      if (ripples.length) {
+        var nowMs = (window.performance && performance.now) ? performance.now() : Date.now();
+        for (var k = ripples.length - 1; k >= 0; k--) {
+          var rp = ripples[k];
+          var age = (nowMs - rp.t) / 1400;
+          if (age >= 1) { ripples.splice(k, 1); continue; }
+          var wave = age * 620;               // radius of the wavefront
+          var fade = 1 - age;
+          for (var q = 0; q < cells.length; q++) {
+            var cc = cells[q];
+            var ddx = cc.x - rp.x, ddy = cc.y - rp.y;
+            var dist = Math.sqrt(ddx * ddx + ddy * ddy);
+            var band = Math.abs(dist - wave);
+            if (band > 58) continue;
+            var g = (1 - band / 58) * fade;
+            ctx.strokeStyle = 'rgba(232,206,142,' + (g * g * 0.8).toFixed(3) + ')';
+            hexPath(ctx, cc.x, cc.y, R);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Motes, plus threads between any two that drift close together.
       for (var j = 0; j < motes.length; j++) {
         var p = motes[j];
         p.y -= p.v;
         p.phase += 0.008;
         if (p.y < -6) { p.y = H + 6; p.x = Math.random() * W; }
-        var mx = p.x + Math.sin(p.phase) * p.sway * 9;
+        p.dx = p.x + Math.sin(p.phase) * p.sway * 9;
+      }
+
+      ctx.lineWidth = 0.8;
+      for (var a = 0; a < motes.length; a++) {
+        for (var b = a + 1; b < motes.length; b++) {
+          var ax = motes[a].dx - motes[b].dx, ay = motes[a].y - motes[b].y;
+          var d2 = ax * ax + ay * ay;
+          if (d2 > 15000) continue;
+          ctx.strokeStyle = 'rgba(201,169,97,' + ((1 - Math.sqrt(d2) / 122) * 0.16).toFixed(3) + ')';
+          ctx.beginPath();
+          ctx.moveTo(motes[a].dx, motes[a].y);
+          ctx.lineTo(motes[b].dx, motes[b].y);
+          ctx.stroke();
+        }
+      }
+      ctx.lineWidth = 1;
+
+      for (var m2 = 0; m2 < motes.length; m2++) {
+        var pm = motes[m2];
         ctx.beginPath();
-        ctx.arc(mx, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(232,206,142,' + p.a.toFixed(2) + ')';
+        ctx.arc(pm.dx, pm.y, pm.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(232,206,142,' + pm.a.toFixed(2) + ')';
         ctx.fill();
       }
 
@@ -512,6 +739,25 @@
     }, { passive: true });
 
     window.addEventListener('mouseout', function () { hasMouse = false; });
+
+    // Tap or click anywhere in the hero and a wave runs out through the
+    // lattice. Works on touch, which is the point — mobile otherwise gets
+    // none of the pointer interaction.
+    (function () {
+      var hero = cv.closest('.hero');
+      if (!hero) return;
+      hero.addEventListener('pointerdown', function (e) {
+        // let real controls do their job
+        if (e.target.closest && e.target.closest('a, button, input, select, textarea')) return;
+        var r = cv.getBoundingClientRect();
+        if (ripples.length > 3) ripples.shift();
+        ripples.push({
+          x: e.clientX - r.left,
+          y: e.clientY - r.top,
+          t: (window.performance && performance.now) ? performance.now() : Date.now()
+        });
+      }, { passive: true });
+    })();
 
     var rt;
     window.addEventListener('resize', function () {

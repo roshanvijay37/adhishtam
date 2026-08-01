@@ -716,7 +716,7 @@ html.is-loading, html.is-loading body { overflow: hidden; }
 .svc__head {
   width: 100%;
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto auto 1fr auto;
   align-items: center;
   gap: clamp(.9rem, 2.5vw, 2rem);
   padding-block: clamp(1.35rem, 2.6vw, 2rem);
@@ -1391,10 +1391,119 @@ html.is-loading, html.is-loading body { overflow: hidden; }
 }
 .is-ready .stat::after { transform: scaleX(1); }
 
+/* --- ridge line ----------------------------------------------------------
+   Three parallax layers of mountain profile, sliding at different speeds.
+   Leads the eye down into the call to action. */
+.ridge {
+  position: relative;
+  height: clamp(90px, 14vw, 190px);
+  margin-bottom: -1px;          /* no hairline seam against the CTA below */
+  overflow: hidden;
+  background: var(--ink);
+}
+.ridge img {
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: bottom;
+}
+
+/* --- molten gold behind the CTA ------------------------------------------ */
+.deco--flow {
+  inset: -30%;
+  width: auto; height: auto;
+  opacity: .5;
+  mix-blend-mode: screen;
+}
+@media (max-width: 700px) { .deco--flow { opacity: .34; } }
+
+/* --- word-by-word scroll reveal ------------------------------------------
+   Words light as the paragraph moves through the viewport, rather than the
+   whole block fading at once. JS toggles .on only when a word crosses the
+   threshold, so a scroll frame writes to a handful of nodes, not hundreds. */
+.rvw span {
+  opacity: .16;
+  transition: opacity .45s var(--ease);
+}
+.rvw span.on { opacity: 1; }
+.section--cream .rvw span { color: rgba(6, 23, 16, .9); }
+
+/* --- cursor reads VIEW over portfolio ------------------------------------ */
+.cursor__label {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--ff-display);
+  font-weight: 700;
+  font-size: .58rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--ink);
+  opacity: 0;
+  transition: opacity .3s var(--ease);
+}
+.cursor.is-view {
+  width: 92px; height: 92px;
+  margin: -46px 0 0 -46px;
+  background: var(--gold);
+  border-color: var(--gold);
+}
+.cursor.is-view .cursor__label { opacity: 1; }
+
+/* --- nav labels swap upward ---------------------------------------------- */
+.swap { display: block; overflow: hidden; height: 1.3em; }
+.swap b {
+  display: block;
+  font-weight: inherit;
+  transition: transform .55s var(--ease);
+}
+.swap b::after { content: attr(data-txt); display: block; }
+.nav__link:hover .swap b,
+.nav__link.is-active .swap b { transform: translateY(-1.3em); }
+
+/* --- service icons draw themselves on open -------------------------------
+   pathLength="1" normalises every path, so one dash rule fits all nine
+   icons regardless of their real geometry. */
+.svc__icon { display: grid; place-items: center; width: 26px; }
+.svc__icon svg { width: 24px; height: 24px; overflow: visible; }
+.svc__icon svg > * {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: .45;
+  transition: opacity .5s var(--ease), transform .6s var(--ease);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+/* Paths carry pathLength="1", so one dash rule draws all nineteen of them at
+   the same rate whatever their real geometry. circle/rect support for
+   pathLength is patchier, so those scale in instead of drawing. */
+.svc__icon path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset .95s var(--ease), opacity .5s var(--ease);
+}
+.svc__icon circle, .svc__icon rect { transform: scale(.55); }
+
+.svc__head[aria-expanded="true"] .svc__icon svg > * { opacity: 1; }
+.svc__head[aria-expanded="true"] .svc__icon path { stroke-dashoffset: 0; }
+.svc__head[aria-expanded="true"] .svc__icon circle,
+.svc__head[aria-expanded="true"] .svc__icon rect { transform: scale(1); }
+.svc__head[aria-expanded="true"] .svc__icon svg > :nth-child(2) { transition-delay: .13s; }
+.svc__head[aria-expanded="true"] .svc__icon svg > :nth-child(3) { transition-delay: .26s; }
+.svc__head[aria-expanded="true"] .svc__icon svg > :nth-child(4) { transition-delay: .39s; }
+@media (max-width: 620px) { .svc__icon { display: none; } }
+
 @media (prefers-reduced-motion: reduce) {
   .grain { animation: none; opacity: .04; }
   .gold-text--shine { animation: none; background-position: 50% 0; }
   .rv-mask { clip-path: none; transform: none; }
+  .rvw span { opacity: 1; }
+  .svc__icon svg > * { stroke-dashoffset: 0; transform: none; opacity: .9; }
 }
 
 /* --- phones --------------------------------------------------------------
@@ -1434,8 +1543,10 @@ html.is-loading, html.is-loading body { overflow: hidden; }
   .marquee span, .marquee__track { gap: 1.6rem; }
   .marquee__track { padding-right: 1.6rem; }
 
-  /* Accordion rows: keep the number, name and toggle from colliding. */
-  .svc__head { gap: .7rem; }
+  /* Accordion rows: keep the number, name and toggle from colliding.
+     The icon is display:none here, so the template drops to three columns —
+     otherwise auto-placement shifts the toggle into the wrong track. */
+  .svc__head { gap: .7rem; grid-template-columns: auto 1fr auto; }
   .svc__no { font-size: .68rem; min-width: 1.8ch; }
 
   .eyebrow { font-size: .68rem; letter-spacing: .22em; }

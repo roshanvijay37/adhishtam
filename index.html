@@ -70,7 +70,7 @@
 </div>
 
 <div class="progress" id="progress"></div>
-<div class="cursor" id="cursor" aria-hidden="true"></div>
+<div class="cursor" id="cursor" aria-hidden="true"><span class="cursor__label">View</span></div>
 <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
 <div class="grain" aria-hidden="true"></div>
 
@@ -81,12 +81,12 @@
       <img src="assets/img/logo-full-cream.png" alt="Adhishtam Digital Solutions" width="1000" height="572">
     </a>
     <nav class="nav__links" aria-label="Primary">
-      <a class="nav__link" href="#home">Home</a>
-      <a class="nav__link" href="#about">About Us</a>
-      <a class="nav__link" href="#services">Services</a>
-      <a class="nav__link" href="#work">Portfolio</a>
-      <a class="nav__link" href="blog.html">Blog</a>
-      <a class="nav__link" href="#contact">Contact Us</a>
+      <a class="nav__link" href="#home"><span class="swap"><b data-txt="Home">Home</b></span></a>
+      <a class="nav__link" href="#about"><span class="swap"><b data-txt="About Us">About Us</b></span></a>
+      <a class="nav__link" href="#services"><span class="swap"><b data-txt="Services">Services</b></span></a>
+      <a class="nav__link" href="#work"><span class="swap"><b data-txt="Portfolio">Portfolio</b></span></a>
+      <a class="nav__link" href="blog.html"><span class="swap"><b data-txt="Blog">Blog</b></span></a>
+      <a class="nav__link" href="#contact"><span class="swap"><b data-txt="Contact Us">Contact Us</b></span></a>
     </nav>
     <a class="btn nav__cta" href="#contact" data-magnet>
       Start a project
@@ -183,7 +183,7 @@
     </div>
 
     <div class="about__grid">
-      <div class="about__body rv">
+      <div class="about__body rv rvw" data-words>
         <p>Adhishtam Digital Solutions is a modern digital marketing and creative agency focused on helping brands grow through innovative design, strategic marketing and high-quality media production.</p>
         <p>We combine creativity, technology and marketing expertise to create powerful brand experiences that connect with audiences and deliver measurable results. Every discipline sits under one roof — so the person shooting your product knows the campaign it's feeding, and the person writing your ads knows the brand it belongs to.</p>
         <p>From startups to established businesses, we provide complete digital solutions tailored to every client's goals — and we've done it for hospitality groups in Bahrain and institutions across coastal Karnataka alike.</p>
@@ -224,6 +224,7 @@
       <div class="svc__item rv">
         <button class="svc__head" aria-expanded="false">
           <span class="svc__no">01</span>
+          <span class="svc__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path pathLength="1" d="M12 3 21 8v8l-9 5-9-5V8z"/><path pathLength="1" d="M12 3v18"/><path pathLength="1" d="M3 8l18 8"/></svg></span>
           <span class="svc__name">Brand Strategy &amp; Identity</span>
           <span class="svc__toggle" aria-hidden="true"></span>
         </button>
@@ -242,6 +243,7 @@
       <div class="svc__item rv">
         <button class="svc__head" aria-expanded="false">
           <span class="svc__no">02</span>
+          <span class="svc__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path pathLength="1" d="M4 20l3-1 10-10-2-2L5 17z"/><path pathLength="1" d="M15 5l2-2 4 4-2 2z"/><path pathLength="1" d="M4 20l1-3"/></svg></span>
           <span class="svc__name">Graphic Design</span>
           <span class="svc__toggle" aria-hidden="true"></span>
         </button>
@@ -259,6 +261,7 @@
       <div class="svc__item rv">
         <button class="svc__head" aria-expanded="false">
           <span class="svc__no">03</span>
+          <span class="svc__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path pathLength="1" d="M3 9h18"/><path pathLength="1" d="M6.5 6.5h.01M9 6.5h.01"/></svg></span>
           <span class="svc__name">Web Design &amp; Development</span>
           <span class="svc__toggle" aria-hidden="true"></span>
         </button>
@@ -277,6 +280,7 @@
       <div class="svc__item rv">
         <button class="svc__head" aria-expanded="false">
           <span class="svc__no">04</span>
+          <span class="svc__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/><path pathLength="1" d="M12 1v3M12 20v3M1 12h3M20 12h3"/></svg></span>
           <span class="svc__name">Digital Marketing &amp; Ads</span>
           <span class="svc__toggle" aria-hidden="true"></span>
         </button>
@@ -298,6 +302,7 @@
       <div class="svc__item rv">
         <button class="svc__head" aria-expanded="false">
           <span class="svc__no">05</span>
+          <span class="svc__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="6" cy="8" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="15" cy="18" r="2.5"/><path pathLength="1" d="M8.2 9.2 13 16.4M8.3 7.3 15.6 6.4"/></svg></span>
           <span class="svc__name">Social Media</span>
           <span class="svc__toggle" aria-hidden="true"></span>
         </button>
@@ -316,6 +321,7 @@
       <div class="svc__item rv">
         <button class="svc__head" aria-expanded="false">
           <span class="svc__no">06</span>
+          <span class="svc__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="14" height="14" rx="2"/><path pathLength="1" d="M16 10l6-3v10l-6-3z"/><path pathLength="1" d="M7 9.5v5l4-2.5z"/></svg></span>
           <span class="svc__name">Video &amp; Motion</span>
           <span class="svc__toggle" aria-hidden="true"></span>
         </button>
@@ -334,6 +340,7 @@
       <div class="svc__item rv">
         <button class="svc__head" aria-expanded="false">
           <span class="svc__no">07</span>
+          <span class="svc__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path pathLength="1" d="M3 8h3l1.5-2.5h9L18 8h3v12H3z"/><circle cx="12" cy="13.5" r="4"/></svg></span>
           <span class="svc__name">Photography</span>
           <span class="svc__toggle" aria-hidden="true"></span>
         </button>
@@ -353,6 +360,7 @@
       <div class="svc__item rv">
         <button class="svc__head" aria-expanded="false">
           <span class="svc__no">08</span>
+          <span class="svc__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path pathLength="1" d="M4 6h13v13H4z"/><path pathLength="1" d="M7 3h13v13"/><path pathLength="1" d="M7 11h7M7 14.5h7"/></svg></span>
           <span class="svc__name">Print &amp; Production</span>
           <span class="svc__toggle" aria-hidden="true"></span>
         </button>
@@ -372,6 +380,7 @@
       <div class="svc__item rv">
         <button class="svc__head" aria-expanded="false">
           <span class="svc__no">09</span>
+          <span class="svc__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path pathLength="1" d="M3 18l5-6 4 3 5-8"/><path pathLength="1" d="M17 7h4v4"/><path pathLength="1" d="M3 21h18"/></svg></span>
           <span class="svc__name">Strategy, Consulting &amp; PR</span>
           <span class="svc__toggle" aria-hidden="true"></span>
         </button>
@@ -538,8 +547,14 @@
   </div>
 </section>
 
+<!-- ridge — three parallax layers of summit profile leading into the CTA -->
+<div class="ridge" aria-hidden="true">
+  <img src="assets/anim/ridge.svg" alt="" loading="lazy" width="1200" height="220">
+</div>
+
 <!-- CTA -->
-<section class="cta">
+<section class="cta has-deco">
+  <img class="deco deco--flow" src="assets/anim/gold-flow.svg" alt="" aria-hidden="true" loading="lazy" width="600" height="600">
   <div class="wrap cta__inner">
     <span class="eyebrow eyebrow--plain rv" style="color:var(--ink)">Ready when you are</span>
     <!-- Split exactly as the closing page of their 2026 deck does it:
