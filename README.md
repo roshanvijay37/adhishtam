@@ -6,6 +6,9 @@ Website for **Adhishtam Digital Solutions** — a creative and digital marketing
 agency in Moodbidri, Mangalore
 ([@adhishtam.in](https://instagram.com/adhishtam.in)).
 
+👉 **[IMPLEMENTED.md](IMPLEMENTED.md)** — everything that's built: pages, design
+system, the full motion inventory, performance figures, and what's still missing.
+
 👉 **[BRAND.md](BRAND.md)** is the working reference — name, colours, services,
 positioning, and the open questions that still need the client's answer.
 
