@@ -11,10 +11,15 @@ media queries.
 
 | File | Raw | Gzipped | Where it's used |
 |---|---|---|---|
-| `topo-summit.svg` | 28 KB | 10 KB | Behind the "How we work" steps |
-| `hex-drift.svg` | 15 KB | ~4 KB | "Why Adhishtam" section, blog page header |
-| `mark-orbit.svg` | 1.3 KB | — | Footer watermark, both pages |
-| `grain.svg` | 0.7 KB | — | Full-page texture overlay, both pages |
+| `topo-summit.svg` | 28 KB | 11 KB | Behind the "How we work" steps |
+| `hex-drift.svg` | 15 KB | 3 KB | "Why Adhishtam" section, blog page header |
+| `ridge.svg` | 9 KB | 1 KB | Band above the CTA |
+| `gold-flow.svg` | 3 KB | 1 KB | Behind the CTA |
+| `mark-orbit.svg` | 1.3 KB | <1 KB | Footer watermark, both pages |
+| `grain.svg` | 0.7 KB | <1 KB | Full-page texture overlay, both pages |
+
+Six files, **18 KB gzipped in total**, and every one except `grain.svg` is
+below the fold and lazy-loaded.
 
 ---
 
@@ -40,6 +45,32 @@ the shimmer looks irregular but the file regenerates identically every time.
 A spark runs the gold arc on an eight-second loop via SMIL `animateMotion`,
 fading in and out at the ends of the path so it doesn't jump. The green peak
 pulses slowly against it. Used large and at 7% opacity as a footer watermark.
+
+### `ridge.svg` — three parallax layers of summit profile
+
+Mountain ridgelines built by midpoint displacement — start with two endpoints,
+repeatedly split each segment and nudge the midpoint by a shrinking random
+amount. Three layers slide at 72, 105 and 150 seconds, which reads as depth.
+
+The loop is seamless **by construction, not by tuning**: each layer's ridge is
+generated once with matching start and end heights, emitted twice side by side,
+and the group translates exactly one tile width. There is no crossfade and no
+visible seam at any speed.
+
+Regenerate with `GenRidge.ps1`. Roughness, layer count and speeds are all at
+the top of the `$layers` array.
+
+### `gold-flow.svg` — molten gold behind the CTA
+
+Three gold masses pushed around by `feDisplacementMap` fed from static
+turbulence, drifting and rotating past each other on long offset cycles.
+
+The performance decision matters here. The filter is applied to **static**
+content, with the animation on groups *outside* the filtered subtree — so each
+blob is rasterised once and every frame after that is a composited transform.
+Animating `baseFrequency` on the `feTurbulence` would look almost identical and
+would re-run a two-octave noise filter on every frame at full raster size,
+which is exactly how you cook a mid-range Android. Don't "improve" it that way.
 
 ### `grain.svg` — film grain tile
 
