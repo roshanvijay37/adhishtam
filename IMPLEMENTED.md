@@ -17,7 +17,7 @@ Companion docs: [README.md](README.md) for how to work on it,
 | **Stack** | Hand-written static HTML, CSS and vanilla JS. **Zero dependencies, no build step, no framework** |
 | **External requests** | **None.** Fonts are self-hosted; nothing is fetched from a third party at runtime |
 | **Pages** | 6, plus a custom 404 |
-| **Critical path** | ~99 KB (HTML + CSS + JS + both fonts) |
+| **Critical path** | ~102 KB (HTML + CSS + JS + both fonts) |
 | **Source files** | `assets/css/style.css` (52 KB), `assets/js/main.js` (32 KB) — one of each |
 
 ---
