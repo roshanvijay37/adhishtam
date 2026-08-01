@@ -20,8 +20,12 @@ no Node toolchain to maintain.
 
 | | |
 |---|---|
-| `index.html` | Home, About, Services, Portfolio, Clients, Why, Process, Contact |
+| `index.html` | Home — hero, about teaser, service cards, four featured projects, clients, why us, CTA |
+| `about.html` | The story, vision and mission, process, clients |
+| `services.html` | All nine departments as an accordion, deep-linkable at `#d1`…`#d9` |
+| `portfolio.html` | Filterable grid, all eight categories |
 | `blog.html` | Journal index — three posts queued, none written yet |
+| `contact.html` | Form, studio address, phone, WhatsApp, socials |
 | `404.html` | Self-contained; its two links are root-absolute (see the note inside) |
 | `assets/css/style.css` | Everything. Custom properties, fluid type, no preprocessor |
 | `assets/js/main.js` | ~380 lines, vanilla. Preloader, cursor, hex canvas, reveals, accordion, portfolio filter, contact form |
@@ -36,6 +40,17 @@ stand-in until the client names their real display face.
 composes a `mailto:` or a pre-filled WhatsApp message from the fields. Nothing
 is stored or sent server-side. If they want real form submissions later, a
 Formspree/Web3Forms endpoint is a five-line change.
+
+### Editing the header or footer
+
+Six standalone pages means **six copies of the nav and footer**, and there is
+no template engine keeping them in sync — that was the deliberate price of
+having no build step. Change one and you must change all six.
+
+You will not get this wrong silently: a CI step extracts both blocks from every
+page, normalises the current-page markers, and **fails the build** if any copy
+has drifted. A forgotten page stops the deploy instead of shipping a site whose
+menu changes depending on where you are.
 
 Accessibility and resilience were built in, not bolted on: the whole site is
 usable with JavaScript disabled (`html:not(.js)` fallbacks settle every
