@@ -193,7 +193,7 @@ No amount of further design work substitutes for these.
 ## Accessibility and resilience
 
 - **Works with JavaScript disabled.** `html:not(.js)` rules settle every
-  animated element, remove the preloader and open the accordions.
+  animated element and open the accordions.
 - **`prefers-reduced-motion` honoured** in the stylesheet, in the JS, and
   separately inside each motion SVG.
 - Skip link, visible focus rings, `aria-expanded` on the accordion and burger,

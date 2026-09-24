@@ -421,107 +421,8 @@ html:not(.js) .work__item img { opacity: 1; }
   .cursor, .cursor-dot { display: none; }
 }
 
-/* --- preloader -----------------------------------------------------------
-   Held deliberately for ~5.2s. That is a long time to look at nothing, so it
-   is choreographed: ring draws, peak draws then fills, wordmark tracks in,
-   tagline follows, meter runs the whole way, then the panel lifts away. */
+/* Scroll lock, used while the lightbox is open. */
 html.is-loading, html.is-loading body { overflow: hidden; }
-
-.preload {
-  position: fixed;
-  inset: 0;
-  z-index: 9500;
-  display: grid;
-  align-content: center;
-  justify-items: center;
-  gap: clamp(2.5rem, 8vh, 4.5rem);
-  padding: var(--pad);
-  background: var(--ink);
-  transition: transform .9s var(--ease), visibility .9s;
-}
-.preload::after {           /* faint gold vignette so it isn't a flat black */
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(60% 50% at 50% 42%, rgba(201, 169, 97, .09), transparent 70%);
-  pointer-events: none;
-}
-.preload.is-done { transform: translateY(-100%); visibility: hidden; }
-.preload.is-done .preload__inner,
-.preload.is-done .preload__meter { opacity: 0; transition: opacity .35s ease; }
-
-.preload__inner { display: grid; justify-items: center; gap: 1.4rem; position: relative; }
-
-.preload__mark { width: clamp(78px, 17vw, 112px); }
-.pl-ring, .pl-line { stroke-linecap: round; stroke-linejoin: round; }
-.pl-ring {
-  stroke-dasharray: 165; stroke-dashoffset: 165;
-  animation: draw 1.5s var(--ease) .15s forwards;
-}
-.pl-line {
-  stroke-dasharray: 285; stroke-dashoffset: 285;
-  animation: draw 1.7s var(--ease) .55s forwards;
-}
-.pl-fill { opacity: 0; animation: pl-in 1s var(--ease) 1.75s forwards; }
-@keyframes draw  { to { stroke-dashoffset: 0; } }
-@keyframes pl-in { to { opacity: 1; } }
-
-.preload__word {
-  font-family: var(--ff-display);
-  font-weight: 800;
-  font-size: clamp(1.15rem, 5.5vw, 1.9rem);
-  color: var(--cream);
-  opacity: 0;
-  letter-spacing: .62em;
-  text-indent: .62em;          /* balances the trailing letter-space */
-  animation: pl-word 1.3s var(--ease) 1.9s forwards;
-}
-@keyframes pl-word {
-  from { opacity: 0; letter-spacing: .62em; }
-  to   { opacity: 1; letter-spacing: .26em; }
-}
-
-.preload__tag {
-  font-size: clamp(.62rem, 2.6vw, .72rem);
-  font-weight: 400;
-  letter-spacing: .42em;
-  text-indent: .42em;
-  text-transform: uppercase;
-  color: var(--gold);
-  opacity: 0;
-  animation: pl-in .9s var(--ease) 2.7s forwards;
-}
-
-.preload__meter {
-  display: grid;
-  justify-items: center;
-  gap: .9rem;
-  position: relative;
-}
-.preload__bar {
-  width: min(240px, 52vw);
-  height: 1px;
-  background: var(--hair-soft);
-  position: relative;
-  overflow: hidden;
-}
-.preload__bar i {
-  position: absolute;
-  inset: 0;
-  background: var(--gold-grad);
-  transform: scaleX(0);
-  transform-origin: left;
-}
-.preload__num {
-  font-family: var(--ff-display);
-  font-weight: 600;
-  font-size: .72rem;
-  letter-spacing: .3em;
-  text-indent: .3em;
-  color: var(--gold);
-  font-variant-numeric: tabular-nums;
-}
-.preload__num::after { content: "%"; }
 
 /* --- scroll progress ---------------------------------------------------- */
 .progress {
@@ -1818,8 +1719,7 @@ html.is-loading, html.is-loading body { overflow: hidden; }
 
 /* --- no-JS fallback ------------------------------------------------------
    Nothing may depend on JS to become visible. If main.js never runs, the
-   preloader must not exist and every animated-in element starts settled. */
-html:not(.js) .preload,
+   every animated-in element starts settled. */
 html:not(.js) .cursor,
 html:not(.js) .cursor-dot,
 html:not(.js) .progress { display: none; }

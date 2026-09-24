@@ -31,7 +31,7 @@ no Node toolchain to maintain.
 | `contact.html` | Form, studio address, phone, WhatsApp, socials |
 | `404.html` | Self-contained; its two links are root-absolute (see the note inside) |
 | `assets/css/style.css` | Everything. Custom properties, fluid type, no preprocessor |
-| `assets/js/main.js` | ~380 lines, vanilla. Preloader, cursor, hex canvas, reveals, accordion, portfolio filter, contact form |
+| `assets/js/main.js` | ~380 lines, vanilla. Cursor, hex canvas, reveals, accordion, portfolio filter, contact form |
 | `assets/img/` | Web-optimised: 1.3 MB total, down from 25 MB of source |
 | `.nojekyll` | Stops GitHub Pages running the files through Jekyll |
 
