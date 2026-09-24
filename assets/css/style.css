@@ -159,12 +159,6 @@ h1, h2, h3, h4 {
   color: transparent;
 }
 
-.outline-text {
-  color: transparent;
-  -webkit-text-stroke: 1.5px var(--gold);
-  paint-order: stroke fill;
-}
-
 /* eyebrow / section index */
 .eyebrow {
   display: inline-flex;
